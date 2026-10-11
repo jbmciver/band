@@ -44,6 +44,13 @@ button,input,select{font:inherit;color:inherit}
 .brand{display:flex;flex-direction:column;min-width:0}
 .brand b{font:800 19px/1.15 var(--f-body);white-space:nowrap}
 .brand span{font-size:13.5px;color:var(--muted)}
+.brand span.stale{color:var(--wait);font-weight:700}
+.updbar{background:var(--brass-soft);border-bottom:1px solid var(--line);padding:12px 16px}
+.updin{max-width:680px;margin:0 auto;display:grid;gap:10px}
+.updin b{display:block;font:800 1.1rem/1.2 var(--f-body);color:var(--brass)}
+.updin span{display:block;color:var(--ink)}
+ul.ticks.prefs input{accent-color:var(--navy)}
+ul.ticks input:disabled+.tk{opacity:.5}
 .hbtns{display:flex;gap:8px;flex:none}
 .ib{appearance:none;width:52px;height:52px;border-radius:14px;border:2px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;font:800 17px var(--f-body);text-decoration:none;flex:none;-webkit-tap-highlight-color:transparent}
 .ib svg{width:24px;height:24px}
@@ -164,7 +171,8 @@ label.f{display:grid;gap:6px;font-weight:700}
 @media (prefers-reduced-motion:no-preference){.sheet .inner{animation:up .18s ease-out}@keyframes up{from{transform:translateY(24px)}}}
 @media (prefers-reduced-motion:reduce){.tcount .drn{animation:none;stroke-dashoffset:47}}
 </style>
-<header class="hdr"><div class="hdr-in"><div class="brand"><b>Wollongong Salvos</b><span id="tbupd"></span></div><div class="hbtns"><button class="ib" id="sizeBtn" type="button" aria-label="Text size and settings">Aa</button><a class="ib" id="refresh" href="#" role="button" aria-label="Refresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5"/></svg></a></div></div></header>
+<header class="hdr"><div class="hdr-in"><div class="brand"><b>Wollongong Salvos</b><span id="tbupd"></span></div><div class="hbtns"><button class="ib" id="sizeBtn" type="button" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div></div></header>
+<div id="updbar" class="updbar" role="status" hidden><div class="updin"><div><b>A new version is ready</b><span>Tap below to get the latest. It takes a moment.</span></div><button type="button" class="btn brass wide" id="updGo">Update now</button></div></div>
 
 <main>
 <div class="wrap" id="v-week">
@@ -271,7 +279,8 @@ function eff(m,i){const s=D.sessions[i],c=m.cells[i],q=queued(m.id,s),it=(intent
   const pend=q||it;const want=pend?pend.want:(["x","p","s"].includes(c)?"away":"in");
   let st;
   if(want==="away")st=(!pend&&c==="x")?"away":(!pend&&c==="s")?"usual":"awaysent";
-  else st=(!pend&&c==="")?"in":"insent";
+  // taking back an away date the Bandmaster hasn't noted yet needs nothing from him, so it shows as In straight away
+  else st=(!pend&&c==="")?"in":(pend&&["","p"].includes(pend.base!==undefined?pend.base:c))?"in":"insent";
   return {want,st}}
 const ST={in:["You're In",""],away:["You're away",""],awaysent:["Away. Sent for Bandmaster","You'll see a red cross once it's noted"],insent:["You're In. Sent for Bandmaster","You'll see a green tick once it's noted"],usual:["Not usually on ",""]};
 function statusHtml(m,i){const e=eff(m,i);let t=ST[e.st][0];if(e.st==="usual")t+=kind(D.sessions[i])==="sun"?"Sundays":"Wednesdays";
@@ -422,10 +431,29 @@ function ytId(u){let m=u.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|sh
   const t=u.match(/[?&#](?:t|start)=(\d+h)?(\d+m)?(\d+)s?/);let start=0;if(t)start=(parseInt(t[1])||0)*3600+(parseInt(t[2])||0)*60+(parseInt(t[3])||0);
   return {id:m[1],start}}
 const onAppsScript=/googleusercontent\.com$/.test(location.hostname)&&D.form&&D.form.quick;
+const PREFS=[["notes","Messages from the Bandmaster",""],["music","Music for practice and Sunday","When the Bandmaster updates it"],["noted","When the Bandmaster notes my dates",""]];
 function sizeSheet(){const m=me();const nm=m?(m.short||m.name.split(" ")[0]):"";
-  openSheet('<h2>Text size</h2><p class="sub">Changes this phone only.</p><div class="sizes">'+[[17,"Normal"],[20,"Large"],[23,"Larger"]].map(z=>'<button type="button" data-fs="'+z[0]+'" aria-pressed="'+(fs===z[0])+'"><span style="font-size:'+z[0]+'px">Aa</span><small>'+z[1]+'</small></button>').join("")+'</div>'
-   +(m?'<div class="sec">Your name</div><div class="setrow"><b>'+esc(m.name)+'</b>'+(onAppsScript?'<a class="lnk" href="'+esc(D.form.quick)+'" target="_top" id="signOut">Not '+esc(nm)+'? Change</a>':'<button type="button" class="lnk" id="signOut">Not '+esc(nm)+'? Change</button>')+'</div>':'')
-   +'<p class="small muted">'+(window.__bandAppVer?'App v'+esc(window.__bandAppVer):'Band page')+'</p><button type="button" class="btn navy" data-close>Done</button>',"size")}
+  openSheet('<h2>Settings</h2>'
+   +(m?'<div class="sec">Your name</div><div class="setrow"><b>'+esc(m.name)+'</b>'+(onAppsScript?'<a class="lnk" href="'+esc(D.form.quick)+'" target="_top" id="signOut">Not '+esc(nm)+'? Switch</a>':'<button type="button" class="lnk" id="signOut">Not '+esc(nm)+'? Switch</button>')+'</div>':'')
+   +'<div class="sec">Text size</div><div class="sizes">'+[[17,"Normal"],[20,"Large"],[23,"Larger"]].map(z=>'<button type="button" data-fs="'+z[0]+'" aria-pressed="'+(fs===z[0])+'"><span style="font-size:'+z[0]+'px">Aa</span><small>'+z[1]+'</small></button>').join("")+'</div>'
+   +'<div class="sec">Latest details</div><div class="setrow"><span class="small">'+esc(updText().replace(/^v[\d.]+ · /,""))+'</span><button type="button" class="btn" id="refreshNow">Refresh now</button></div><p class="small muted">The app also checks by itself every few minutes. You can pull down from the top of the page to check too.</p>'
+   +(window.__bandPush?'<div class="sec">Alerts on this phone</div><div id="alertsBox"><p class="muted">Checking…</p></div>':'')
+   +'<p class="small muted">'+(window.__bandAppVer?'App version '+esc(window.__bandAppVer):'Band page')+'</p><button type="button" class="btn navy" data-close>Done</button>',"size");
+  renderAlerts()}
+let alertBusy=false;
+function renderAlerts(msg){const box=$("alertsBox");if(!box||!window.__bandPush)return;
+  window.__bandPush.state().then(a=>{const b=$("alertsBox");if(!b)return;let h="";
+    if(a.reason==="install")h='<p>To get alerts, add the app to your Home Screen first. In Safari, tap the Share button, then <b>Add to Home Screen</b>. Then open the band app from your Home Screen.</p>';
+    else if(a.reason==="unsupported")h='<p class="muted">This phone or browser can\'t show band alerts.</p>';
+    else if(a.reason==="denied")h='<p>Alerts are blocked for this app. To allow them, open your phone\'s <b>Settings</b>, then <b>Notifications</b>, then <b>Salvo Band</b>.</p>';
+    else if(!a.on)h='<p class="sub">Get an alert on this phone when something changes for the band.</p><button type="button" class="btn brass wide" data-alerts="on"'+(alertBusy?' disabled':'')+'>Turn on alerts</button>';
+    else h='<div class="setrow"><b>Alerts are on</b><button type="button" class="lnk" data-alerts="off"'+(alertBusy?' disabled':'')+'>Turn off</button></div><p class="sub">Send me an alert for:</p><ul class="ticks prefs">'
+      +PREFS.map(p=>'<li><label><input type="checkbox" data-pref="'+p[0]+'"'+(a.prefs[p[0]]?' checked':'')+(alertBusy?' disabled':'')+'><span class="tk"><b>'+p[1]+'</b>'+(p[2]?'<small>'+p[2]+'</small>':'')+'</span></label></li>').join("")+'</ul>';
+    if(msg)h+='<p class="small" role="status">'+esc(msg)+'</p>';
+    b.innerHTML=h}).catch(()=>{const b=$("alertsBox");if(b)b.innerHTML='<p class="muted">Alerts aren\'t available right now.</p>'})}
+function alertsDo(fn,okMsg){if(alertBusy)return;alertBusy=true;renderAlerts();
+  fn().then(()=>{alertBusy=false;renderAlerts(okMsg)}).catch(e=>{alertBusy=false;renderAlerts(e&&e.message==="denied"?"":"That didn't work. Check your internet connection and try again.")})}
+function prefsNow(){const o={};for(const p of PREFS){const c=document.querySelector('input[data-pref="'+p[0]+'"]');o[p[0]]=c?c.checked:true}return o}
 
 // ----- events -----
 document.addEventListener("click",e=>{
@@ -449,10 +477,13 @@ $("sheet").addEventListener("click",e=>{const t=e.target;
   if(t.closest("[data-confirm]")&&pendingSet){const m=me(),s=D.sessions[pendingSet.i];const it={date:s,want:pendingSet.want,reason:pendingSet.want==="away"?reasonVal():""};closeSheet();pendingSet=null;enqueue(m,[it]);return}
   if(t.closest("[data-rgo]")){const m=me(),rs=reasonVal();const items=upcoming().map(i=>D.sessions[i]).filter(s=>rangeSel&&rangeSel[s]&&eff(m,D.sessions.indexOf(s)).want!=="away").map(s=>({date:s,want:"away",reason:rs}));if(!items.length)return;closeSheet();enqueue(m,items);return}
   const f=t.closest("button[data-fs]");if(f){fs=+f.dataset.fs;store.set("band2.fs",fs);document.documentElement.style.setProperty("--fs",fs+"px");for(const b of document.querySelectorAll("[data-fs]"))b.setAttribute("aria-pressed",String(+b.dataset.fs===fs));return}
-  const so=t.closest("#signOut");if(so){store.set("band.who","");try{localStorage.removeItem("band.pagepw")}catch(x){}
+  const al=t.closest("button[data-alerts]");if(al&&window.__bandPush){if(al.dataset.alerts==="on")alertsDo(()=>window.__bandPush.enable({notes:true,music:true,noted:true}),"Alerts are on. We've sent you a test alert.");else alertsDo(()=>window.__bandPush.disable(),"Alerts are off.");return}
+  if(t.closest("#refreshNow")){refreshNow();return}
+  const so=t.closest("#signOut");if(so){store.set("band.who","");if(window.__bandPush)window.__bandPush.disable().catch(()=>{});try{localStorage.removeItem("band.pagepw")}catch(x){}
     if(!onAppsScript){e.preventDefault();who="";$("who").value="";$("pickGo").disabled=true;closeSheet();$("pick").hidden=false;renderAll()}}
 });
-$("sheet").addEventListener("change",e=>{const c=e.target.closest("input[data-rg]");if(c){rangeSel[c.dataset.rg]=c.checked;rangeList();return}
+$("sheet").addEventListener("change",e=>{const pf=e.target.closest("input[data-pref]");if(pf&&window.__bandPush){alertsDo(()=>window.__bandPush.setPrefs(prefsNow()),"Saved.");return}
+  const c=e.target.closest("input[data-rg]");if(c){rangeSel[c.dataset.rg]=c.checked;rangeList();return}
   if(e.target.id==="rgF"||e.target.id==="rgT"){rangeSel=null;rangeList()}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("sheet").hidden)closeSheet()});
 
@@ -463,20 +494,21 @@ sel.innerHTML+=D.members.filter(m=>m.player).slice().sort((a,b)=>a.formName.loca
 sel.addEventListener("change",()=>{$("pickGo").disabled=!sel.value});
 $("pickGo").addEventListener("click",()=>{if(!sel.value)return;who=sel.value;store.set("band.who",who);store.set("band.whoSince",D.pwSince||"");$("pick").hidden=true;
   const seen=store.get("band.noted",{}),m=me();if(m)(D.notes||[]).forEach(n=>{if(seen[n.id]===n.v)markNoted(n)});   // notes read before picking a name
-  loadNotedFor();renderAll();window.scrollTo(0,0)});
+  loadNotedFor();renderAll();window.scrollTo(0,0);if(window.__bandPush)window.__bandPush.resync()});
 if(!who)$("pick").hidden=false;
 
 // ----- header -----
 function whenText(t){if(isNaN(t))return "";const h=t.getHours(),mi=String(t.getMinutes()).padStart(2,"0");const tm=((h%12)||12)+":"+mi+(h<12?"am":"pm");
   return t.toDateString()===new Date().toDateString()?tm:DOW[t.getDay()]+" "+t.getDate()+" "+MON[t.getMonth()]+" "+tm}
+function isStale(){const st=window.__bandStatus;return !!(st&&st.checked&&!st.checking&&Date.now()-st.checked>3600000)}
+function setTop(){const el=$("tbupd");el.textContent=updText();el.classList.toggle("stale",isStale())}
 function updText(){const v=window.__bandAppVer?"v"+window.__bandAppVer+" · ":"";const st=window.__bandStatus;
   if(st&&st.checking)return v+"Checking…";
+  if(st&&st.checked&&isStale())return v+"Not updated since "+whenText(new Date(st.checked));
   if(st&&st.checked)return v+(st.offline?"Offline · ":"Updated ")+whenText(new Date(st.checked));
   const t=new Date(D.updatedAt||"");return v+(isNaN(t)?(D.updated?"Updated "+D.updated:""):"Updated "+whenText(t))}
-(function renderTop(){$("tbupd").textContent=updText();const r=$("refresh");
-  if(window.__bandRefresh)r.addEventListener("click",e=>{e.preventDefault();window.__bandRefresh()});
-  else if(onAppsScript){r.href=D.form.quick;r.target="_top"}
-  else r.addEventListener("click",e=>{e.preventDefault();location.reload()})})();
+(function renderTop(){setTop();setInterval(setTop,60000)})();
+function refreshNow(){if(window.__bandRefresh){window.__bandRefresh();closeSheet();showMsg("Checking for updates…")}else if(onAppsScript){window.top.location.href=D.form.quick}else location.reload()}
 
 if(queue&&!queue.failed)setTimeout(flush,800);   // left over from last time the app was open
 // one-off: send notes this phone already marked Noted before the Bandmaster's record existed
@@ -484,14 +516,16 @@ if(me()&&!store.get("band.notedSynced",false)){const seen=store.get("band.noted"
   (D.notes||[]).forEach(n=>{if(seen[n.id]===n.v&&!q.some(y=>y.id===n.id))q.push({m:who,id:n.id,v:n.v})});store.set("band.notedQ",q);store.set("band.notedSynced",true)}
 setTimeout(flushNoted,1200);loadNotedFor();
 renderAll();
-window.__bandRerender=function(){$("tbupd").textContent=updText();if(!D.members.some(m=>m.id===who)){who="";$("pick").hidden=false}renderAll()};
+window.__bandSafe=()=>!queue&&$("sheet").hidden&&$("pick").hidden;
+window.__bandToast=(t,sub)=>showMsg(t,sub);
+window.__bandRerender=function(){setTop();if(!D.members.some(m=>m.id===who)){who="";$("pick").hidden=false}renderAll()};
 })();
 };</script>
 <script>
 (function(){
 "use strict";
 var API="https://script.google.com/macros/s/AKfycbyicvqPU2m1jZ4yLrbjZCFO2o-fEr2UdV1A44Wgd8dOGOhgwjMjfH__ndfWq8qbjNDX/exec",KK="band.k",KD="band.data";
-window.__bandAppVer="2.1";
+window.__bandAppVer="2.2";
 var st={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},del:function(k){try{localStorage.removeItem(k)}catch(e){}}};
 var $=function(id){return document.getElementById(id)};
 function sha(s){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ("0"+x.toString(16)).slice(-2)}).join("")})}
@@ -500,12 +534,12 @@ function call(p){var q=Object.keys(p).map(function(k){return encodeURIComponent(
 // sending from the page goes through the same API, shaped like google.script.run
 function mk(ok,fail){return{withSuccessHandler:function(f){return mk(f,fail)},withFailureHandler:function(f){return mk(ok,f)},
   sendFromPage:function(n,d,id){call({api:"send",k:st.get(KK)||"",n:n,d:d,id:id}).then(function(r){
-    if(r&&r.ok){ok&&ok({title:r.title,body:r.body})}else{fail&&fail(new Error((r&&r.error)||"failed"))}}).catch(function(e){fail&&fail(e)})},
+    if(r&&r.ok){ok&&ok({title:r.title,body:r.body});setTimeout(check,1500)}else{fail&&fail(new Error((r&&r.error)||"failed"))}}).catch(function(e){fail&&fail(e)})},
   notedFromPage:function(m,nid,v){call({api:"noted",k:st.get(KK)||"",m:m,nid:nid,v:v}).then(function(r){
     if(r&&r.ok){ok&&ok(r)}else{fail&&fail(new Error((r&&r.error)||"failed"))}}).catch(function(e){fail&&fail(e)})}}}
 window.__bandGsr=mk(null,null);
 var booted=false;
-function boot(d){window.__BAND_DATA__=d;$("gate").hidden=true;if(!booted){booted=true;window.__bandBoot();setTimeout(installHint,1500)}}
+function boot(d){window.__BAND_DATA__=d;$("gate").hidden=true;if(!booted){booted=true;window.__bandBoot();setTimeout(installHint,1500);updatedToast();setTimeout(function(){verCheck(true)},2500);setTimeout(function(){if(window.__bandPush)window.__bandPush.resync()},4000)}}
 function gate(title,msg,form,err,retry){$("gate").hidden=false;$("gTitle").textContent=title;$("gMsg").textContent=msg;$("gForm").hidden=!form;$("gErr").textContent=err||"";$("gRetry").hidden=!retry;if(form)setTimeout(function(){$("gPw").focus()},50)}
 function askPw(err){gate("Band password","Enter the band password once. This phone will remember it.",true,err,false)}
 // Open straight away with the copy saved on this phone, then check for updates in the background.
@@ -543,7 +577,56 @@ window.__bandRefresh=check;
       check();var w=setInterval(function(){if(!busy){clearInterval(w);el.querySelector("i").innerHTML="&#8595;";hide()}},300)}
     else hide();dy=0},{passive:true});
 })();
-document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible"&&booted){var t=+st.get(KT)||0;if(Date.now()-t>60000)check()}});
+// Keep the data fresh without anyone tapping Refresh: when the app comes back on screen, and every 5 minutes while it is open.
+function due(ms){return Date.now()-(+st.get(KT)||0)>ms}
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible"&&booted){if(due(20000))check();verCheck()}});
+window.addEventListener("focus",function(){if(booted&&due(20000))check()});
+setInterval(function(){if(document.visibilityState!=="visible"||!booted)return;if(due(240000))check();verCheck()},300000);
+if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",function(e){if(e.data==="refresh"&&booted)check()});
+
+// ----- app updates: check version.json, update by itself when it's safe, else show the Update now bar -----
+var KU="band.updatedTo",KUA="band.updAttempt",verBusy=false,verAt=0;
+function safeNow(){return !window.__bandSafe||window.__bandSafe()}
+function doUpdate(v){var a=st.get(KUA)||"";var now=Date.now();
+  if(a.split("|")[0]===v&&now-(+a.split("|")[1]||0)<600000){$("updbar").hidden=false;return}   // tried in the last 10 minutes, let them tap
+  st.set(KUA,v+"|"+now);st.set(KU,v);
+  var go=function(){location.reload()};
+  var sw=("serviceWorker" in navigator)?navigator.serviceWorker.getRegistration().then(function(r){return r&&r.update()}).catch(function(){}):Promise.resolve();
+  Promise.all([sw,fetch("./?v="+encodeURIComponent(v),{cache:"reload"}).catch(function(){})]).then(go,go)}
+function verCheck(force){if(verBusy||(!force&&Date.now()-verAt<60000))return;verBusy=true;verAt=Date.now();
+  fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.json():null}).then(function(j){verBusy=false;
+    if(!j||!j.v||j.v===window.__bandAppVer){$("updbar").hidden=true;return}
+    if(safeNow())doUpdate(j.v);else $("updbar").hidden=false}).catch(function(){verBusy=false})}
+$("updGo").addEventListener("click",function(){$("updGo").disabled=true;$("updGo").textContent="Updating…";st.del(KUA);
+  fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){doUpdate(j.v||"")},function(){location.reload()})});
+function updatedToast(){if(st.get(KU)===window.__bandAppVer){st.del(KU);st.del(KUA);setTimeout(function(){if(window.__bandToast)window.__bandToast("App updated to version "+window.__bandAppVer)},600)}}
+
+// ----- alerts (web push straight from the band's Apps Script) -----
+var KP="band.push";
+function b64ToU8(s){s=s.replace(/-/g,"+").replace(/_/g,"/");s+="===".slice((s.length+3)%4);var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u}
+function whoNow(){try{return JSON.parse(localStorage.getItem("band.who")||'""')||""}catch(e){return ""}}
+function pushPrefs(){try{return JSON.parse(st.get(KP)||"null")}catch(e){return null}}
+function reg(){return navigator.serviceWorker.ready}
+function sendSub(sub,prefs){var j=sub.toJSON();var on=Object.keys(prefs).filter(function(k){return prefs[k]}).join(",");
+  return call({api:"sub",k:st.get(KK)||"",m:whoNow(),ep:j.endpoint,p:j.keys.p256dh,a:j.keys.auth,prefs:on,test:"1"}).then(function(r){if(!r||!r.ok)throw new Error((r&&r.error)||"failed")})}
+window.__bandPush={
+  state:function(){var ok="serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window;
+    var ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+    if(!ok)return Promise.resolve({reason:ios&&!standalone?"install":"unsupported"});
+    if(Notification.permission==="denied")return Promise.resolve({reason:"denied"});
+    return reg().then(function(r){return r.pushManager.getSubscription()}).then(function(sub){var p=pushPrefs();return {on:!!(sub&&p),prefs:p||{notes:true,music:true,noted:true}}})},
+  enable:function(prefs){return Notification.requestPermission().then(function(perm){if(perm!=="granted")throw new Error("denied");
+      var key=(window.__BAND_DATA__||{}).vapid;if(!key)throw new Error("no key");
+      return reg().then(function(r){return r.pushManager.getSubscription().then(function(s){return s||r.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64ToU8(key)})})})})
+    .then(function(sub){return sendSub(sub,prefs).then(function(){st.set(KP,JSON.stringify(prefs))})})},
+  setPrefs:function(prefs){return reg().then(function(r){return r.pushManager.getSubscription()}).then(function(sub){if(!sub)throw new Error("off");
+    var j=sub.toJSON(),on=Object.keys(prefs).filter(function(k){return prefs[k]}).join(",");
+    return call({api:"sub",k:st.get(KK)||"",m:whoNow(),ep:j.endpoint,p:j.keys.p256dh,a:j.keys.auth,prefs:on}).then(function(r){if(!r||!r.ok)throw new Error("failed");st.set(KP,JSON.stringify(prefs))})})},
+  disable:function(){st.del(KP);if(!("serviceWorker" in navigator))return Promise.resolve();
+    return reg().then(function(r){return r.pushManager.getSubscription()}).then(function(sub){if(!sub)return;var ep=sub.toJSON().endpoint;
+      return call({api:"unsub",k:st.get(KK)||"",ep:ep}).catch(function(){}).then(function(){return sub.unsubscribe()})})},
+  resync:function(){var p=pushPrefs();if(!p||!("serviceWorker" in navigator))return;reg().then(function(r){return r.pushManager.getSubscription()}).then(function(sub){if(sub)return window.__bandPush.setPrefs(p)}).catch(function(){})}
+};
 $("gRetry").addEventListener("click",check);
 $("gForm").addEventListener("submit",function(ev){ev.preventDefault();var pw=$("gPw").value.trim();if(!pw)return;
   $("gGo").disabled=true;$("gErr").textContent="Checking…";
