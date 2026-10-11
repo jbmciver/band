@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-AU">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -15,148 +15,183 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 </head>
 <body>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
 <style>
-/* Layout: in-flow header, then two views. "This week" (notes, next practice, next Sunday) and "My dates" (compact list by month). */
-:root{--bg:#f5f6f8;--surface:#fff;--ink:#18213a;--muted:#5d6782;--line:#dde1ea;--line-strong:#b9c0d0;--brass:#a8741c;--brass-soft:#f6ecd8;--brass-ink:#6b4a10;--navy:#22305a;--bad:#b3261e;--bad-soft:#fbe4e2;--pend:#7a5a00;--pend-soft:#fff4c7;--draft:#22305a;--draft-soft:#e3e8f6;--stand:#8a91a6;--ok:#1d6b3a;--ok-soft:#e3f3e8;
---f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;--f-body:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11141c;--surface:#191d28;--ink:#e6e9f2;--muted:#9aa2b8;--line:#2b3142;--line-strong:#465069;--brass:#e0ae55;--brass-soft:#3a2f1a;--brass-ink:#d9c49a;--navy:#a9b8e8;--bad:#f28b82;--bad-soft:#3d1f1d;--pend:#f3d36b;--pend-soft:#3a3214;--draft:#c3cff5;--draft-soft:#26304d;--stand:#6b7287;--ok:#7fd3a0;--ok-soft:#183324;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#11141c;--surface:#191d28;--ink:#e6e9f2;--muted:#9aa2b8;--line:#2b3142;--line-strong:#465069;--brass:#e0ae55;--brass-soft:#3a2f1a;--brass-ink:#d9c49a;--navy:#a9b8e8;--bad:#f28b82;--bad-soft:#3d1f1d;--pend:#f3d36b;--pend-soft:#3a3214;--draft:#c3cff5;--draft-soft:#26304d;--stand:#6b7287;--ok:#7fd3a0;--ok-soft:#183324;color-scheme:dark}
+/* v2 layout: in-flow header, three views (This week, My dates, Messages) switched by a fixed bottom tab bar. Large type for older eyes, rem-based so the Text size setting scales everything. */
+:root{--fs:17px;--bg:#f1f3f7;--surface:#ffffff;--ink:#0f1629;--muted:#36415c;--line:#cfd5e1;--line-strong:#9aa3b8;--navy:#22305a;--on-navy:#ffffff;--brass:#8f620f;--on-brass:#ffffff;--brass-soft:#f4e8cf;--ok:#17673a;--ok-soft:#dcf1e3;--bad:#a8231b;--bad-soft:#fbe1de;--wait:#6e4a00;--wait-soft:#fdefc3;--focus:#1f5fd6;--scrim:rgba(8,12,22,.55);
+--f-body:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11151f;--surface:#1b2130;--ink:#f1f3f8;--muted:#c2cadb;--line:#363f55;--line-strong:#59637c;--navy:#aebde9;--on-navy:#11151f;--brass:#e3b45c;--on-brass:#1b1406;--brass-soft:#3a2f18;--ok:#86d8a6;--ok-soft:#173424;--bad:#f39a90;--bad-soft:#3d1d1a;--wait:#f2cf6a;--wait-soft:#3a3014;--focus:#8db4ff;--scrim:rgba(0,0,0,.65);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11151f;--surface:#1b2130;--ink:#f1f3f8;--muted:#c2cadb;--line:#363f55;--line-strong:#59637c;--navy:#aebde9;--on-navy:#11151f;--brass:#e3b45c;--on-brass:#1b1406;--brass-soft:#3a2f18;--ok:#86d8a6;--ok-soft:#173424;--bad:#f39a90;--bad-soft:#3d1d1a;--wait:#f2cf6a;--wait-soft:#3a3014;--focus:#8db4ff;--scrim:rgba(0,0,0,.65);color-scheme:dark}
+html{font-size:var(--fs);-webkit-text-size-adjust:100%}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);margin:0}
-p{margin:0;max-width:65ch}
-.muted{color:var(--muted)} .small{font-size:.85rem}
-select,input,textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:8px 10px;max-width:100%}
-label.f{display:flex;flex-direction:column;gap:4px;max-width:360px;font-size:.8rem;color:var(--muted);font-weight:500}
-.btn{appearance:none;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);font:600 .9rem var(--f-body);padding:9px 15px;min-height:44px;border-radius:10px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
-.btn.primary{background:var(--navy);border-color:var(--navy);color:var(--bg)}
-.btn.send{background:var(--brass);border-color:var(--brass);color:var(--bg)}
+body{background:var(--bg);color:var(--ink);font:1rem/1.45 var(--f-body);margin:0;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+p{margin:0}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.small{font-size:.9rem}.muted{color:var(--muted)}
+.btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:56px;padding:10px 16px;border-radius:14px;border:2px solid var(--line);background:var(--surface);color:var(--ink);font:700 1.05rem var(--f-body);cursor:pointer;text-align:center;text-decoration:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn:active{transform:scale(.98)}
+.btn.send,.btn.brass{background:var(--brass);border-color:var(--brass);color:var(--on-brass)}
+.btn.primary,.btn.navy{background:var(--navy);border-color:var(--navy);color:var(--on-navy)}
+.btn.wide{width:100%}
+.btn:disabled{opacity:.5}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.star{color:var(--brass)}
-/* header: in the page flow, below the phone's clock */
-.hdr{background:var(--surface);border-bottom:1px solid var(--line);padding:max(10px,env(safe-area-inset-top,0px)) 16px 10px}
-@media (display-mode:standalone){html{background:var(--surface)}.hdr{padding-top:calc(env(safe-area-inset-top,0px) + 14px)}}
-.hdr-in{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
+/* header */
+.hdr{background:var(--surface);border-bottom:1px solid var(--line);padding:max(10px,env(safe-area-inset-top,0px)) 16px 12px}
+@media (display-mode:standalone){html{background:var(--surface)}.hdr{padding-top:calc(env(safe-area-inset-top,0px) + 12px)}}
+.hdr-in{max-width:680px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .brand{display:flex;flex-direction:column;min-width:0}
-.brand b{font:700 1.06rem/1.15 var(--f-display)}
-.brand span{font-size:.78rem;color:var(--muted)}
-.wrap{max-width:720px;margin:0 auto;padding:16px 16px 48px;display:grid;gap:14px}
+.brand b{font:800 19px/1.15 var(--f-body);white-space:nowrap}
+.brand span{font-size:13.5px;color:var(--muted)}
+.hbtns{display:flex;gap:8px;flex:none}
+.ib{appearance:none;width:52px;height:52px;border-radius:14px;border:2px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;font:800 17px var(--f-body);text-decoration:none;flex:none;-webkit-tap-highlight-color:transparent}
+.ib svg{width:24px;height:24px}
+.ib:disabled{opacity:.35;cursor:default}
+/* views */
+.wrap{max-width:680px;margin:0 auto;padding:16px 16px 28px;display:grid;gap:14px}
 .wrap>*{min-width:0}
-body.hasbar .wrap{padding-bottom:150px}
-.hi{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.hi h1{margin:0;font:700 1.65rem/1.1 var(--f-display)}
-.hi a,.hi button{appearance:none;border:0;background:none;padding:6px 0;font:inherit;font-size:.82rem;color:var(--muted);text-decoration:underline;cursor:pointer}
-.lbl{margin:6px 0 0;font:600 .78rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1.pg{margin:0;font:800 1.6rem/1.15 var(--f-body)}
+.sec{font-weight:700;color:var(--muted);margin-top:4px}
+.month{font:800 1.15rem var(--f-body);margin-top:6px}
 /* notes */
-.notes{background:var(--brass-soft);border-radius:12px;padding:14px;display:grid;gap:10px}
-.notes-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.notes-h span{font:600 .75rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--brass)}
-.notes-h i{font-style:normal;padding:2px 8px;border-radius:999px;background:var(--brass);color:var(--bg);font:600 .75rem var(--f-body)}
-ul.nl{list-style:none;margin:0;padding:0;display:grid}
-ul.nl li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;align-items:center;padding:10px 0;border-top:1px solid color-mix(in srgb,var(--brass) 30%,transparent)}
-ul.nl li:first-child{border-top:0;padding-top:2px}
-.nd{grid-column:1;font-size:.78rem;color:var(--brass-ink)}
-.nt{grid-column:1;white-space:pre-wrap;overflow-wrap:anywhere;font-size:1rem}.nt a{color:var(--brass)}
-ul.nl .noted{grid-column:2;grid-row:1/span 2;background:var(--brass);border-color:var(--brass);color:var(--bg)}
-.oldn summary{cursor:pointer;font-size:.85rem;color:var(--brass-ink);padding:6px 0;min-height:36px;list-style:none}
-.oldn summary::-webkit-details-marker{display:none}
-.oldn summary::after{content:" \203A"}
-.oldn[open] summary::after{content:" \2039"}
-ul.nl.old li{grid-template-columns:minmax(0,1fr)}
-.notes.quiet{background:var(--surface);border:1px solid var(--line);padding:4px 14px}
-.notes.quiet .oldn summary{display:flex;justify-content:space-between;align-items:center;color:var(--muted);min-height:44px}
-.notes.quiet ul.nl li{border-top-color:var(--line)}
-.notes.quiet .nd{color:var(--muted)}
-/* this-week cards */
-.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.card-h{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 14px 8px}
-.card-d{display:flex;flex-direction:column;min-width:0}
-.card-d b{font:700 1.2rem/1.2 var(--f-display)}
-.card.sun .card-d b{color:var(--brass)}
-.card-d span{font-size:.82rem;color:var(--muted)}
-.card-b{padding:0 14px 14px;display:grid;gap:10px}
-.kv{display:grid;grid-template-columns:86px minmax(0,1fr);gap:4px 10px;font-size:.9rem}
-.kv>span:nth-child(odd){color:var(--muted)}
-.ev{font-size:.82rem;color:var(--brass)}
-ol.mus{margin:0;padding-left:20px;display:grid;gap:6px;font-size:.9rem}
-ol.mus .mi{display:block;font-size:.8rem;color:var(--muted)}
-ol.mus .tag{font-size:.74rem;font-weight:600;color:var(--brass)}
-/* status pill (tap to change) */
-.pill{appearance:none;flex-shrink:0;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:6px 12px;border-radius:999px;border:1px solid currentColor;background:transparent;font:600 .8rem/1.2 var(--f-body);color:var(--muted);cursor:pointer;text-align:left;max-width:52%;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-.pill::after{content:"\203A";font-size:1.15em;font-weight:700;line-height:1}
-.pill:active{transform:scale(.97)}
-.pill:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
-.pill.in{color:var(--ok);background:var(--ok-soft);border-color:transparent}
-.pill.in::before{content:"\2713";font-weight:700}
-.pill.x,.pill.s{color:var(--bad);background:var(--bad-soft);border-color:transparent}
-.pill.p,.pill.r,.pill.us{color:var(--pend);background:var(--pend-soft);border-color:transparent}
-.pill.dr,.pill.db,.pill.dc,.pill.du{color:var(--draft);background:var(--draft-soft);border-style:dashed}
-.pill.cs{color:var(--muted)}
-.alld{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:58px;padding:8px 16px;border-radius:12px;border:0;background:var(--draft-soft);color:var(--ink);font:600 1rem var(--f-body);text-align:left;cursor:pointer;width:100%}
-.alld small{display:block;font-weight:400;font-size:.78rem;color:var(--muted)}
-.alld::after{content:"\203A";font-size:1.4em;line-height:1}
+.msg{background:var(--brass-soft);border:2px solid color-mix(in srgb,var(--brass) 45%,transparent);border-radius:16px;padding:14px;display:grid;gap:10px}
+.msg.read{background:var(--surface);border-color:var(--line)}
+.msg .from{font-weight:700;color:var(--brass);font-size:.92rem}
+.msg.read .from{color:var(--muted)}
+.msg .nt{font-size:1.05rem;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg .nt a{color:var(--navy)}
+.more{font-size:.92rem;color:var(--muted)}
+/* date card */
+.dc{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;gap:12px}
+.dh{display:grid;gap:2px}
+.dd{font:800 1.3rem/1.15 var(--f-body)}
+.dk{color:var(--muted)}
+.ev{color:var(--brass);font-weight:700}
+.st{display:flex;align-items:center;gap:10px;font-weight:700;padding:10px 12px;border-radius:12px}
+.st svg{width:24px;height:24px;flex:none}
+.st small{display:block;font-weight:400;font-size:.85rem;color:var(--muted)}
+.st.in{background:var(--ok-soft);color:var(--ok)}
+.st.away{background:var(--bad-soft);color:var(--bad)}
+.st.awaysent,.st.insent{background:var(--wait-soft);color:var(--wait)}
+.st.usual{background:var(--bg);color:var(--muted)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pair .btn{min-height:58px;padding:8px 6px;font-size:1rem}
+.pair .btn.yes[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.pair .btn.no[aria-pressed="true"]{background:var(--bad);border-color:var(--bad);color:var(--surface)}
+.who{color:var(--muted)}
+.who b{color:var(--ink)}
+ol.mus{margin:0;padding-left:1.4em;display:grid;gap:8px}
+.mrow{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.mrow>div{min-width:0}
+.mrow b{font-weight:700}
+.mrow .mi{display:block;color:var(--muted);font-size:.88rem}
+.mrow .tag{color:var(--brass);font-weight:700;font-size:.85rem}
+.recb{appearance:none;flex:none;display:inline-flex;align-items:center;gap:5px;min-height:46px;padding:0 14px;border-radius:999px;border:2px solid var(--brass);background:var(--surface);color:var(--brass);font:700 .9rem var(--f-body);cursor:pointer}
+.recb svg{width:18px;height:18px}
 /* my dates */
-.back{display:flex;align-items:center;gap:6px}
-.back h1{margin:0;font:700 1.35rem/1.1 var(--f-display)}
-.back button{appearance:none;border:0;background:none;color:var(--ink);font:600 .95rem var(--f-body);min-height:44px;padding:0 8px 0 0;cursor:pointer;display:inline-flex;align-items:center;gap:2px}
-.back button::before{content:"\2039";font-size:1.5em;line-height:1;margin-top:-3px}
-.legwrap summary{cursor:pointer;font-size:.85rem;color:var(--muted);padding:6px 0;min-height:36px}
-.legend{display:flex;gap:10px 14px;flex-wrap:wrap;font-size:.8rem;color:var(--muted);margin-top:6px}
-.legend i{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:4px;font:600 .7rem var(--f-mono);font-style:normal;margin-right:5px;vertical-align:-4px}
-ul.ml{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
-ul.ml li+li{border-top:1px solid var(--line)}
-.mrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px 10px 14px;min-height:62px}
-.mrow.dr,.mrow.db,.mrow.dc,.mrow.du{background:var(--draft-soft)}
-.mrow.p,.mrow.r{background:var(--pend-soft)}
-.mrow.x,.mrow.s{background:var(--bad-soft)}
-.mdd{display:flex;flex-direction:column;min-width:0}
-.mdd b{font-weight:600}
-.mrow.sun .mdd b{color:var(--brass)}
-.mdk{font-weight:400;font-size:.8rem;color:var(--muted)}
-.mda{font-size:.78rem;color:var(--muted);line-height:1.35}
-.mde{font-size:.75rem;color:var(--brass);overflow-wrap:anywhere}
-.more{width:100%}
-/* send bar, sheets, sign-in */
-.sendbar{position:fixed;left:0;right:0;bottom:0;z-index:15;background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -6px 24px rgba(0,0,0,.15);padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
-.sendbar .sbtxt{flex:1 1 160px;min-width:0;font-size:.9rem}
-.sbdates{display:block;font-size:.8rem;color:var(--muted);line-height:1.35;margin-top:2px}
+.dhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.seg{display:inline-grid;grid-template-columns:1fr 1fr;border:2px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.seg button{appearance:none;border:0;background:none;color:var(--muted);min-height:48px;padding:0 12px;font:700 .92rem var(--f-body);display:flex;align-items:center;gap:6px;cursor:pointer}
+.seg button svg{width:20px;height:20px}
+.seg button[aria-pressed="true"]{background:var(--navy);color:var(--on-navy)}
+.cal{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px;display:grid;gap:8px}
+.cal .ch{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.cal .ch b{font:800 1.15rem var(--f-body)}
+.grid7{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;text-align:center}
+.grid7 .dow{font-size:.8rem;font-weight:700;color:var(--muted)}
+.grid7 .d{aspect-ratio:1;display:grid;place-items:center;border-radius:10px;font-weight:700;color:var(--muted);font-size:.95rem;min-width:0}
+.grid7 button.d{appearance:none;border:2px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;padding:0;width:100%;font:800 1rem var(--f-body)}
+.grid7 button.d.in{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.grid7 button.d.away{background:var(--bad);color:var(--surface);border-color:transparent}
+.grid7 button.d.usual{background:var(--bg);color:var(--muted);border-style:dotted}
+.grid7 button.d.awaysent,.grid7 button.d.insent{background:var(--wait-soft);color:var(--wait);border:2px dashed var(--wait)}
+.grid7 button.d.sel{outline:3px solid var(--navy);outline-offset:1px}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.88rem;color:var(--muted)}
+.leg i{display:inline-block;width:15px;height:15px;border-radius:4px;vertical-align:-2px;margin-right:6px}
+/* tab bar */
+.tbar{position:fixed;left:0;right:0;bottom:0;z-index:12;display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface);border-top:1px solid var(--line);padding:6px 8px calc(8px + env(safe-area-inset-bottom,0px))}
+.tbar button{appearance:none;border:0;background:none;color:var(--muted);display:grid;justify-items:center;gap:2px;padding:6px 2px;min-height:62px;font:700 14.5px var(--f-body);cursor:pointer;border-radius:12px;position:relative;-webkit-tap-highlight-color:transparent}
+.tbar button svg{width:28px;height:28px}
+.tbar button[aria-current="page"]{color:var(--navy);background:color-mix(in srgb,var(--navy) 13%,transparent)}
+.badge{position:absolute;top:2px;left:calc(50% + 6px);background:var(--bad);color:#fff;border-radius:999px;font-size:.78rem;min-width:22px;height:22px;display:grid;place-items:center;padding:0 6px}
+/* toast */
+.toast{position:fixed;left:12px;right:12px;bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:14;max-width:560px;margin:0 auto;background:var(--ink);color:var(--bg);border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:12px;font-weight:700;box-shadow:0 8px 28px rgba(0,0,0,.3)}
+.toast .ttxt{flex:1;min-width:0}
+.toast .ttxt small{display:block;font-weight:400;font-size:.85rem;opacity:.85}
+.toast button{appearance:none;border:2px solid var(--bg);background:transparent;color:var(--bg);border-radius:12px;min-height:48px;padding:0 16px;font:700 1rem var(--f-body);cursor:pointer;flex:none}
+.tcount{position:relative;width:42px;height:42px;flex:none}
+.tcount svg{width:42px;height:42px;transform:rotate(-90deg)}
+.tcount .trk{fill:none;stroke:color-mix(in srgb,var(--bg) 30%,transparent);stroke-width:3.5}
+.tcount .drn{fill:none;stroke:var(--bg);stroke-width:3.5;stroke-linecap:round;stroke-dasharray:94.25;stroke-dashoffset:0;animation:drain 5s linear forwards}
+@keyframes drain{to{stroke-dashoffset:94.25}}
+.tcount b{position:absolute;inset:0;display:grid;place-items:center;font-size:1rem}
+/* sheets */
+.sheet{position:fixed;inset:0;z-index:20;background:var(--scrim);display:flex;align-items:flex-end;justify-content:center}
+.sheet .inner{background:var(--surface);width:100%;max-width:600px;border-radius:22px 22px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom,0px));display:grid;gap:14px;max-height:90vh;overflow-y:auto;overscroll-behavior:contain}
+.sheet h2{margin:0;font:800 1.35rem/1.2 var(--f-body)}
+.sheet .sub{color:var(--muted)}
+.reasons{display:flex;flex-wrap:wrap;gap:8px}
+.reasons button{appearance:none;border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:10px 16px;min-height:50px;font:700 1rem var(--f-body);cursor:pointer}
+.reasons button[aria-pressed="true"]{border-color:var(--navy);background:color-mix(in srgb,var(--navy) 15%,var(--surface))}
+.sheet input[type=text],.sheet input[type=date],.sheet select{width:100%;min-height:54px;font-size:1.05rem;border:2px solid var(--line);border-radius:12px;padding:8px 12px;background:var(--surface)}
+.fl{display:grid;gap:6px;font-weight:700}
+.two{display:grid;grid-template-columns:1fr;gap:12px}
+.two>*{min-width:0}
+ul.ticks{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+ul.ticks li+li{border-top:1px solid var(--line)}
+ul.ticks label{display:flex;align-items:center;gap:12px;min-height:56px;padding:6px 14px;cursor:pointer}
+ul.ticks input{width:26px;height:26px;accent-color:var(--bad);flex:none}
+ul.ticks .tk{display:grid}
+ul.ticks .tk small{color:var(--muted)}
+.sizes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sizes button{appearance:none;border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;min-height:72px;cursor:pointer;font-family:var(--f-body);font-weight:800;display:grid;place-items:center;gap:2px;padding:6px}
+.sizes button small{font-size:13px;font-weight:700;color:var(--muted)}
+.sizes button[aria-pressed="true"]{border-color:var(--navy);box-shadow:inset 0 0 0 2px var(--navy)}
+.vid{position:relative;width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+audio{width:100%}
+.setrow{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--bg);border-radius:12px;padding:10px 14px}
+.lnk{appearance:none;border:0;background:none;color:var(--navy);font:700 1rem var(--f-body);text-decoration:underline;min-height:48px;padding:0 4px;cursor:pointer}
+/* sign-in and name pick (also used by the app's password gate) */
 .pick{position:fixed;inset:0;z-index:30;background:var(--bg);display:grid;place-items:start center;padding:48px 16px;overflow-y:auto}
-.pickcard{width:100%;max-width:420px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;display:grid;gap:14px}
-.pickcard h1{margin:0;font:700 1.6rem/1.1 var(--f-display)}
-.pickcard h1 small{display:block;font:500 .78rem var(--f-body);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
-.pickcard select{min-height:48px;font-size:1rem;width:100%}
-.pickcard label.f{max-width:none}
-.pickcard .btn{min-height:48px;font-size:1rem}
-.pickcard .btn:disabled{opacity:.45}
-.sheet{position:fixed;inset:auto 0 0 0;z-index:20;background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -8px 30px rgba(0,0,0,.18);padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));max-height:88vh;overflow-y:auto}
-.sheet .inner{max-width:560px;margin:0 auto;display:grid;gap:12px}
-.sheet h2{font:600 1.1rem/1.2 var(--f-display);margin:0}
-ul.evl{margin:0;padding-left:1.1em;font-size:.88rem;display:grid;gap:3px}
-.sentbody h2{font:600 .95rem var(--f-body);margin:10px 0 2px}.sentbody ul{margin:0;padding-left:1.2em}.sentbody p{margin:0 0 6px}.sentbody .m{color:var(--muted)}
-@media (prefers-reduced-motion:no-preference){.sheet{animation:up .18s ease-out}@keyframes up{from{transform:translateY(20px);opacity:.6}}}
+.pickcard{width:100%;max-width:440px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;display:grid;gap:16px}
+.pickcard h1{margin:0;font:800 1.6rem/1.15 var(--f-body)}
+.pickcard h1 small{display:block;font:700 .9rem var(--f-body);color:var(--brass);margin-bottom:4px}
+.pickcard select,.pickcard input{width:100%;min-height:56px;font-size:1.05rem;border:2px solid var(--line);border-radius:12px;padding:8px 12px;background:var(--surface)}
+label.f{display:grid;gap:6px;font-weight:700}
+.inst{bottom:calc(96px + env(safe-area-inset-bottom,0px))!important}
+@media (prefers-reduced-motion:no-preference){.sheet .inner{animation:up .18s ease-out}@keyframes up{from{transform:translateY(24px)}}}
+@media (prefers-reduced-motion:reduce){.tcount .drn{animation:none;stroke-dashoffset:47}}
 </style>
-<header class="hdr"><div class="hdr-in"><div class="brand"><b>Wollongong Salvo Band</b><span id="tbupd"></span></div><a class="btn" id="refresh" href="#" role="button" aria-label="Refresh">&#8635; Refresh</a></div></header>
+<header class="hdr"><div class="hdr-in"><div class="brand"><b>Wollongong Salvos</b><span id="tbupd"></span></div><div class="hbtns"><button class="ib" id="sizeBtn" type="button" aria-label="Text size and settings">Aa</button><a class="ib" id="refresh" href="#" role="button" aria-label="Refresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5"/></svg></a></div></div></header>
 
-<div class="wrap" id="v-home">
-  <div class="hi"><h1 id="hiName">Hi</h1><span id="whobar"></span></div>
-  <section class="notes" id="notes" hidden></section>
-  <h2 class="lbl">This week</h2>
-  <div id="week" style="display:grid;gap:12px"></div>
-  <button class="alld" id="goDates" type="button"><span>All my dates<small id="alldSub"></small></span></button>
-  <p class="small muted">Click "All my dates" to update future attendance.</p>
+<main>
+<div class="wrap" id="v-week">
+  <h1 class="pg" id="hiName">Hi</h1>
+  <div id="noteTop"></div>
+  <div class="sec">This week</div>
+  <div id="week" style="display:grid;gap:14px"></div>
 </div>
-
 <div class="wrap" id="v-dates" hidden>
-  <div class="back"><button type="button" id="goHome">This week</button><h1>My dates</h1></div>
-  <p class="small muted">Tap a date to change it. Nothing goes to the Bandmaster until you tap Send. Changes show as ? until the Bandmaster notes them.</p>
-  <details class="legwrap"><summary>What do the symbols mean?</summary><div class="legend"><span><i style="background:var(--ok-soft);color:var(--ok)">✓</i>In</span><span><i style="background:var(--bad-soft);color:var(--bad)">✕</i>Away</span><span><i style="background:var(--pend-soft);color:var(--pend)">?</i>Waiting to be noted by the Bandmaster</span><span><i style="background:var(--draft-soft);color:var(--draft)">•</i>Ready to send</span><span><i style="background:var(--pend-soft);color:var(--pend)">↺</i>Can make it now, waiting to be noted</span><span><i style="background:var(--draft-soft);color:var(--draft)">↩</i>Change ready to send, or sent</span><span><i style="background:var(--bad-soft);color:var(--bad)">–</i>Usually not available that day</span><span><i class="star">★</i>Something on at the Corps</span></div></details>
-  <div id="myarea"></div>
+  <div class="dhead"><h1 class="pg">My dates</h1><div class="seg" role="group" aria-label="How to show your dates"><button type="button" data-view="list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>List</button><button type="button" data-view="cal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Calendar</button></div></div>
+  <button class="btn navy wide" id="rangeBtn" type="button">Away for a few weeks?</button>
+  <div id="myarea" style="display:grid;gap:12px"></div>
 </div>
+<div class="wrap" id="v-msg" hidden>
+  <h1 class="pg">Messages</h1>
+  <div id="msgs" style="display:grid;gap:12px"></div>
+</div>
+</main>
 
-<div id="sendbar" class="sendbar" hidden></div>
-<div id="pick" class="pick" hidden><div class="pickcard"><h1><small>Wollongong Salvo Band</small>Who are you?</h1><p class="small muted">Choose your name once. This phone will remember it.</p><label class="f">Your name<select id="who"><option value="">Choose your name</option></select></label><button class="btn send" id="pickGo" disabled>Continue</button></div></div>
-<div id="sheet" class="sheet" hidden><div class="inner" id="sheetInner"></div></div>
+<nav class="tbar" id="tbar" aria-label="Sections">
+  <button type="button" data-tab="week"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>This week</button>
+  <button type="button" data-tab="dates"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>My dates</button>
+  <button type="button" data-tab="msg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>Messages<span class="badge" id="mBadge" hidden></span></button>
+</nav>
+<div id="toast" class="toast" role="status" hidden></div>
+<div id="pick" class="pick" hidden><div class="pickcard"><h1><small>Wollongong Salvos</small>Who are you?</h1><p class="muted">Choose your name once. This phone will remember it.</p><label class="f">Your name<select id="who"><option value="">Choose your name</option></select></label><button class="btn send" id="pickGo" disabled>Continue</button></div></div>
+<div id="sheet" class="sheet" hidden><div class="inner" id="sheetInner" role="dialog" aria-modal="true"></div></div>
 
 <style>
 .gate .pickcard p{margin:0}
@@ -174,7 +209,7 @@ ul.evl{margin:0;padding-left:1.1em;font-size:.88rem;display:grid;gap:3px}
 body.hasbar .inst{display:none}
 </style>
 <div id="gate" class="pick gate"><div class="pickcard">
-  <h1><small>Wollongong Salvo Band</small><span id="gTitle">Opening…</span></h1>
+  <h1><small>Wollongong Salvos</small><span id="gTitle">Opening…</span></h1>
   <p class="small muted" id="gMsg">Getting the latest band details.</p>
   <form id="gForm" hidden style="display:grid;gap:12px"><input id="gPw" type="password" autocomplete="current-password" placeholder="Band password" aria-label="Band password"><button class="btn send" id="gGo" type="submit">Open</button></form>
   <div class="err" id="gErr" role="alert"></div>
@@ -188,180 +223,265 @@ body.hasbar .inst{display:none}
 const D=window.__BAND_DATA__;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],MONL=["January","February","March","April","May","June","July","August","September","October","November","December"],DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],MONL=["January","February","March","April","May","June","July","August","September","October","November","December"],DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],DOWL=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const P=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
+const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 const kind=s=>P(s).getDay()===0?"sun":"wed";
 const fmt=(s,l)=>{const d=P(s);return (l?DOW[d.getDay()]+" ":"")+d.getDate()+" "+MON[d.getMonth()]};
-const evOn=s=>D.events.filter(e=>s>=e.date&&s<=e.end);
+const fmtLong=s=>{const d=P(s);return DOWL[d.getDay()]+" "+d.getDate()+" "+MONL[d.getMonth()]};
+const evOn=s=>(D.events||[]).filter(e=>s>=e.date&&s<=e.end);
 // a session is over once Sunday worship ends (1pm) or Wednesday practice ends (9pm)
 const isPast=s=>{const d=P(s);d.setHours(kind(s)==="sun"?13:21,0,0,0);return Date.now()>=d.getTime()};
-// per-viewer state kept in this browser only
 const store={get(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch(e){return f}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const ICON={
+  in:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  away:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  sent:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg>',
+  usual:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 12h12"/></svg>',
+  play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>'
+};
+
+// ----- per-phone state -----
 let who=store.get("band.who","");
-let drafts=store.get("band.drafts",{}); // {memberId:{date:reason}}
-let sent=store.get("band.sent",{});     // {memberId:{date:true}}
-let backs=store.get("band.backs",{});   // {memberId:{date:true}} ready to send "available again"
-let sentBacks=store.get("band.sentBacks",{});
-let cancels=store.get("band.cancels",{});    // {memberId:{date:true}} ready to send "cancel, sent by mistake"
-let sentCancels=store.get("band.sentCancels",{});
-let unbacks=store.get("band.unbacks",{});       // {memberId:{date:true}} ready to send "undo can make it"
-let sentUnbacks=store.get("band.sentUnbacks",{});
 if(!D.members.some(m=>m.id===who))who="";
-let view="home",showAll=false;
+let intents=store.get("band2.intents",{});   // {memberId:{date:{want:"in"|"away",at}}} sent, not yet shown on the roster
+let queue=store.get("band2.queue",null);     // {mid,items:[{date,want,reason}],at} waiting out the Undo time
+let fs=store.get("band2.fs",17);
+let tab=store.get("band2.tab","week"),dview=store.get("band2.dview","list"),showAll=false,calM=null,calSel=null;
+document.documentElement.style.setProperty("--fs",fs+"px");
+// carry over v1 "sent" markers so nothing looks lost after the update
+(function migrate(){if(store.get("band2.migrated",false))return;
+  const put=(src,want)=>{const o=store.get(src,{});for(const id in o)for(const s in o[id]){(intents[id]=intents[id]||{})[s]={want,at:Date.now()}}};
+  put("band.sent","away");put("band.sentUnbacks","away");put("band.sentBacks","in");put("band.sentCancels","in");
+  store.set("band2.intents",intents);store.set("band2.migrated",true)})();
 
-function cellCls(m,i){const s=D.sessions[i];let c=m.cells[i];
-  if((c==="r"||((c==="x"||c==="p"||c==="s")&&(sentBacks[m.id]||{})[s]))&&(unbacks[m.id]||{})[s])return "du";
-  if(c==="r"&&(sentUnbacks[m.id]||{})[s])return "us";
-  if((c==="p"||(c===""&&(sent[m.id]||{})[s]))&&(cancels[m.id]||{})[s])return "dc";
-  if((c==="p"||c==="")&&(sentCancels[m.id]||{})[s])return "cs";
-  if((c==="x"||c==="p"||c==="s")&&(backs[m.id]||{})[s])return "db";
-  if((c==="x"||c==="p"||c==="s")&&(sentBacks[m.id]||{})[s])return "r";
-  if(c===""&&((drafts[m.id]||{})[s]!==undefined))return "dr";
-  if(c===""&&(sent[m.id]||{})[s])return "p";
-  return c}
-const ST={"":"In",x:"✕ Away",p:"? Waiting",s:"– Usually not",dr:"• Away, ready to send",r:"↺ Can make it, waiting",db:"↺ Can make it, ready to send",dc:"↩ Cancel, ready to send",cs:"Cancel sent",du:"↩ Away after all, ready to send",us:"↩ Away after all, sent"};
-function pill(m,i){const c=cellCls(m,i);return '<button type="button" class="pill '+(c||"in")+'" data-i="'+i+'" aria-label="'+esc(fmt(D.sessions[i],true))+': '+esc(ST[c])+'. Tap to change">'+esc(ST[c])+'</button>'}
-const ini=n=>{const w=String(n).trim().split(/\s+/);return w.length>1?w[0]+" "+w[w.length-1][0]:w[0]};
-function awayNames(me,i){return D.members.filter(x=>x.id===me.id?["x","p","s","dr","r","du","us"].includes(cellCls(x,i)):(x.cells[i]==="x"||x.cells[i]==="p"||x.cells[i]==="s")).map(x=>ini(x.name))}
-function awayLine(me,i){const a=awayNames(me,i);return '<span class="mda">'+(a.length?'Away: '+esc(a.join(", ")):'Nobody away')+'</span>'}
-function upcoming(){return D.sessions.map((s,i)=>i).filter(i=>!isPast(D.sessions[i]))}
+const me=()=>D.members.find(x=>x.id===who);
+const upcoming=()=>D.sessions.map((s,i)=>i).filter(i=>!isPast(D.sessions[i]));
+// tidy intents the roster now reflects, or that are old or past
+(function tidy(){const now=Date.now();
+  for(const id in intents){const m=D.members.find(x=>x.id===id);
+    for(const s in intents[id]){const i=D.sessions.indexOf(s),it=intents[id][s],c=m&&i>=0?m.cells[i]:null;
+      if(!m||i<0||isPast(s)||now-(it.at||0)>2*86400000||(it.want==="away"&&(c==="x"||c==="p"))||(it.want==="in"&&(c===""||c==="r")&&it.base!==c))delete intents[id][s]}
+    if(!Object.keys(intents[id]).length)delete intents[id]}
+  store.set("band2.intents",intents)})();
 
-function musicList(list,empty){if(!list.length)return '<span class="muted">'+empty+'</span>';
-  return '<ol class="mus">'+list.map(r=>'<li><b>'+esc(r.t)+'</b>'+(r.cat?' <span class="tag">'+esc(r.cat)+'</span>':r.po?' <span class="tag">'+esc(r.po)+' this Sunday</span>':'')+(r.i?'<span class="mi">'+esc(r.i)+'</span>':'')+'</li>').join("")+'</ol>'}
-function weekCard(m,i){const s=D.sessions[i],k=kind(s),ev=evOn(s),M=D.music||{};
-  let body="";
-  if(ev.length)body+='<div class="ev">★ '+esc(ev.map(e=>e.title+(e.time?", "+e.time:"")).join(" · "))+'</div>';
-  const kv=[];
-  if(k==="wed"){const w=(M.weds||[]).find(x=>x.d===s);const reh=(w&&w.reh)||[];const dv=reh.find(r=>r.devo);
-    if(dv)kv.push(["Devotions",esc(dv.i||"Not set yet")]);
-    kv.push(["Music",musicList(reh.filter(r=>!r.devo),"Not set yet")])}
-  else{const w=(M.suns||[]).find(x=>x.d===s);kv.push(["Band music",musicList((w&&w.list)||[],"Not set yet")])}
-  const a=awayNames(m,i);kv.push(["Away",a.length?esc(a.join(", ")):'<span class="muted">Nobody</span>']);
-  body+='<div class="kv">'+kv.map(x=>'<span>'+x[0]+'</span><span>'+x[1]+'</span>').join("")+'</div>';
-  return '<article class="card '+k+'"><div class="card-h"><div class="card-d"><b>'+fmt(s,true)+'</b><span>'+(k==="sun"?"Meeting":"Practice")+'</span></div>'+pill(m,i)+'</div><div class="card-b">'+body+'</div></article>'}
-function renderHome(){const m=D.members.find(x=>x.id===who);
+function queued(mid,s){return queue&&queue.mid===mid?queue.items.find(x=>x.date===s):null}
+// what this member wants for a session, and how to show it
+function eff(m,i){const s=D.sessions[i],c=m.cells[i],q=queued(m.id,s),it=(intents[m.id]||{})[s];
+  const pend=q||it;const want=pend?pend.want:(["x","p","s"].includes(c)?"away":"in");
+  let st;
+  if(want==="away")st=(!pend&&c==="x")?"away":(!pend&&c==="s")?"usual":"awaysent";
+  else st=(!pend&&c==="")?"in":"insent";
+  return {want,st}}
+const ST={in:["You're In",""],away:["You're away",""],awaysent:["Away. Sent for Bandmaster","You'll see a red cross once it's noted"],insent:["You're In. Sent for Bandmaster","You'll see a green tick once it's noted"],usual:["Not usually on ",""]};
+function statusHtml(m,i){const e=eff(m,i);let t=ST[e.st][0];if(e.st==="usual")t+=kind(D.sessions[i])==="sun"?"Sundays":"Wednesdays";
+  const ic=e.st==="in"?ICON.in:e.st==="away"?ICON.away:e.st==="usual"?ICON.usual:ICON.sent;
+  return '<div class="st '+e.st+'">'+ic+'<span>'+esc(t)+(ST[e.st][1]?'<small>'+ST[e.st][1]+'</small>':'')+'</span></div>'}
+function pairHtml(m,i){const w=eff(m,i).want;
+  return '<div class="pair"><button type="button" class="btn yes" data-set="in" data-i="'+i+'" aria-pressed="'+(w==="in")+'">I\'ll be there</button><button type="button" class="btn no" data-set="away" data-i="'+i+'" aria-pressed="'+(w==="away")+'">I\'m away</button></div>'}
+const shortName=n=>{const w=String(n).trim().split(/\s+/);return w.length>1?w[0]+" "+w[w.length-1][0]:w[0]};
+function awayHtml(m,i){const a=[];if(eff(m,i).want==="away")a.push("You");
+  D.members.forEach(x=>{if(x.id!==m.id&&["x","p","s"].includes(x.cells[i]))a.push(shortName(x.name))});
+  return '<div class="who"><b>Away:</b> '+(a.length?esc(a.join(", ")):"Nobody")+'</div>'}
+const kindLabel=s=>kind(s)==="sun"?"Sunday meeting":"Practice";
+function evHtml(s){const ev=evOn(s);return ev.length?'<span class="ev">★ '+esc(ev.map(e=>e.title+(e.time?", "+e.time:"")).join(" · "))+'</span>':''}
+
+// ----- music -----
+let recs=[];
+function musicHtml(list){if(!list.length)return '<p class="muted">Not set yet</p>';
+  return '<ol class="mus">'+list.map(r=>{let btn="";if(r.l){btn='<button type="button" class="recb" data-rec="'+recs.length+'" aria-label="Listen to '+esc(r.t)+'">'+ICON.play+'Listen</button>';recs.push(r)}
+    const tag=r.cat?r.cat:r.po?r.po+" this Sunday":"";
+    return '<li><div class="mrow"><div><b>'+esc(r.t)+'</b>'+(tag?' <span class="tag">'+esc(tag)+'</span>':'')+(r.i?'<span class="mi">'+esc(r.i)+'</span>':'')+'</div>'+btn+'</div></li>'}).join("")+'</ol>'}
+function cardHtml(m,i,full){const s=D.sessions[i],k=kind(s),M=D.music||{};
+  let h='<article class="dc"><div class="dh"><span class="dd">'+fmt(s,true)+'</span><span class="dk">'+kindLabel(s)+'</span>'+evHtml(s)+'</div>'+statusHtml(m,i)+pairHtml(m,i);
+  if(full){if(k==="wed"){const w=(M.weds||[]).find(x=>x.d===s),reh=(w&&w.reh)||[],dv=reh.find(r=>r.devo);
+      if(dv)h+='<div class="who"><b>Devotions:</b> '+esc(dv.i||"Not set yet")+'</div>';
+      h+='<div class="sec">Music</div>'+musicHtml(reh.filter(r=>!r.devo))}
+    else{const w=(M.suns||[]).find(x=>x.d===s);h+='<div class="sec">Band music</div>'+musicHtml((w&&w.list)||[])}}
+  return h+awayHtml(m,i)+'</article>'}
+
+// ----- views -----
+function renderWeek(){const m=me();recs=[];
   $("hiName").textContent=m?"Hi "+(m.short||m.name.split(" ")[0]):"Hi";
   if(!m){$("week").innerHTML="";return}
-  const up=upcoming();const wi=up.find(i=>kind(D.sessions[i])==="wed"),si=up.find(i=>kind(D.sessions[i])==="sun");
-  $("week").innerHTML=[wi,si].filter(i=>i!=null).sort((a,b)=>a-b).map(i=>weekCard(m,i)).join("")||'<p class="small muted">No sessions coming up.</p>';
-  const last=up.length?D.sessions[up[up.length-1]]:"";$("alldSub").textContent=last?"Next 13 weeks, to "+fmt(last,true):""}
-function renderDates(){
-  const area=$("myarea");const m=D.members.find(x=>x.id===who);
+  const up=upcoming(),wi=up.find(i=>kind(D.sessions[i])==="wed"),si=up.find(i=>kind(D.sessions[i])==="sun");
+  $("week").innerHTML=[wi,si].filter(i=>i!=null).sort((a,b)=>a-b).map(i=>cardHtml(m,i,true)).join("")||'<p class="muted">No band dates coming up.</p>'}
+function renderDates(){const m=me(),area=$("myarea");
+  for(const b of document.querySelectorAll("[data-view]"))b.setAttribute("aria-pressed",String(b.dataset.view===dview));
   if(!m){area.innerHTML="";return}
-  const up=upcoming();const shown=showAll?up:up.slice(0,8);
-  let h="",mon=null,open=false;
-  for(const i of shown){const s=D.sessions[i];const mm=P(s).getMonth();const c=cellCls(m,i);const ev=evOn(s);
-    if(mm!==mon){if(open)h+='</ul>';h+='<h2 class="lbl">'+MONL[mm]+'</h2><ul class="ml">';open=true;mon=mm}
-    h+='<li><div class="mrow '+kind(s)+' '+(c||"in")+'"><span class="mdd"><b>'+fmt(s,true)+' <span class="mdk">'+(kind(s)==="sun"?"meeting":"practice")+'</span></b>'+(ev.length?'<span class="mde">★ '+esc(ev.map(e=>e.title).join("; "))+'</span>':'')+awayLine(m,i)+'</span>'+pill(m,i)+'</div></li>'}
-  if(open)h+='</ul>';
-  if(!showAll&&up.length>shown.length)h+='<button type="button" class="btn more" id="moreBtn">Show more dates, to '+fmt(D.sessions[up[up.length-1]],true)+'</button>';
-  area.innerHTML=h;
-  const mb=$("moreBtn");if(mb)mb.addEventListener("click",()=>{showAll=true;renderDates()})}
-function renderBar(){const m=D.members.find(x=>x.id===who);const bar=$("sendbar");
-  if(!m){bar.hidden=true;return}
-  const ds=drafts[m.id]||{};const keys=Object.keys(ds).sort();const bk=Object.keys(backs[m.id]||{}).sort();const cc=Object.keys(cancels[m.id]||{}).sort();const ub=Object.keys(unbacks[m.id]||{}).sort();
-  const n=keys.length+bk.length+cc.length+ub.length;
-  if(!n){bar.hidden=true;bar.innerHTML="";document.body.classList.remove("hasbar");return}
-  const url=sendUrl(m);const L=a=>a.map(k=>fmt(k,true)).join(", ");
-  const parts=[keys.length?'Away: '+L(keys):'',bk.length?'Can make it: '+L(bk):'',cc.length?'Cancel: '+L(cc):'',ub.length?'Away after all: '+L(ub):''].filter(Boolean);
-  bar.innerHTML='<div class="sbtxt"><b>'+n+' change'+(n===1?'':'s')+' not sent</b>'+parts.map(t=>'<span class="sbdates">'+esc(t)+'</span>').join("")+(D.form.quick?'':'<span class="sbdates">Opens the form filled in. Press Submit there.</span>')+'</div><a class="btn send" id="sendBtn" href="'+esc(url)+'" target="_blank" rel="noopener">Send to the Bandmaster</a><button class="btn" id="clearBtn">Clear</button>';
-  bar.hidden=false;document.body.classList.add("hasbar");
-  const sb=$("sendBtn");if(sb)sb.addEventListener("click",e=>{const mark=()=>{const s=sent[m.id]=sent[m.id]||{};keys.forEach(k=>s[k]=true);const sb=sentBacks[m.id]=sentBacks[m.id]||{};bk.forEach(k=>sb[k]=true);const sc=sentCancels[m.id]=sentCancels[m.id]||{};cc.forEach(k=>{sc[k]=true;delete s[k]});const su=sentUnbacks[m.id]=sentUnbacks[m.id]||{};ub.forEach(k=>{su[k]=true;delete sb[k]});delete unbacks[m.id];store.set("band.unbacks",unbacks);store.set("band.sentUnbacks",sentUnbacks);delete drafts[m.id];delete backs[m.id];delete cancels[m.id];store.set("band.cancels",cancels);store.set("band.sentCancels",sentCancels);store.set("band.sent",sent);store.set("band.drafts",drafts);store.set("band.sentBacks",sentBacks);store.set("band.backs",backs);};const gsr=window.__bandGsr||((typeof google!=="undefined"&&google.script&&google.script.run&&typeof google.script.run.sendFromPage==="function"&&D.form.quick)?google.script.run:null);if(!gsr){mark();setTimeout(renderMine,300);return}e.preventDefault();if(sb.dataset.busy)return;sb.dataset.busy="1";sb.textContent="Sending...";let q;try{q=new URL(sendUrl(m)).searchParams}catch(x){q=null}if(!q){delete sb.dataset.busy;mark();location.href=sendUrl(m);return}gsr.withSuccessHandler(r=>{mark();renderMine();showSent(r)}).withFailureHandler(err=>{delete sb.dataset.busy;sb.textContent="Send to the Bandmaster";showSent({title:"Not sent",body:'<p>Something went wrong. Check your connection and tap Send to the Bandmaster again.</p>'})}).sendFromPage(q.get("n")||"",q.get("d")||"",q.get("id")||"")});
-  const cb=$("clearBtn");if(cb)cb.addEventListener("click",()=>{delete drafts[m.id];delete backs[m.id];delete cancels[m.id];delete unbacks[m.id];store.set("band.unbacks",unbacks);store.set("band.cancels",cancels);store.set("band.drafts",drafts);store.set("band.backs",backs);renderMine()})}
-function renderMine(){renderHome();renderDates();renderBar()}
-function setView(v){view=v;$("v-home").hidden=v!=="home";$("v-dates").hidden=v!=="dates";window.scrollTo(0,0)}
-$("goDates").addEventListener("click",()=>setView("dates"));
-$("goHome").addEventListener("click",()=>setView("home"));
-function sendUrl(m){
-  const ds=drafts[m.id]||{};const keys=Object.keys(ds).sort();const bk=Object.keys(backs[m.id]||{}).sort();const cc=Object.keys(cancels[m.id]||{}).sort();const ub=Object.keys(unbacks[m.id]||{}).sort();if((!keys.length&&!bk.length&&!cc.length&&!ub.length)||!(D.form.url||D.form.quick))return "";
-  const au=k=>(kind(k)==="sun"?"Sun ":"Wed ")+k.slice(8,10)+"/"+k.slice(5,7)+"/"+k.slice(0,4);
-  const txt=keys.map(k=>au(k)+(ds[k]?" ("+ds[k].replace(/[()]/g,"")+")":"")).concat(bk.map(k=>au(k)+" AVAILABLE")).concat(cc.map(k=>au(k)+" CANCEL")).concat(ub.map(k=>au(k)+" UNDO AVAILABLE")).join("; ");
-  if(D.form.quick)return D.form.quick+"?n="+encodeURIComponent(m.formName)+"&d="+encodeURIComponent(txt)+"&id="+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
-  return D.form.url+"?usp=pp_url&entry."+D.form.name+"="+encodeURIComponent(m.formName)+"&entry."+D.form.dates+"="+encodeURIComponent(txt)}
-function showSent(r){r=r||{};$("sheetInner").innerHTML='<h2>'+esc(r.title||'Sent to the Bandmaster')+'</h2><div class="sentbody small">'+(r.body||'')+'</div><div class="row"><button class="btn primary" data-a="close">Done</button></div>';$("sheet").hidden=false;$("sheetInner").onclick=ev=>{if(ev.target.closest("button[data-a]"))$("sheet").hidden=true}}
-function openSheet(i){
-  const m=D.members.find(x=>x.id===who);if(!m)return;const s=D.sessions[i];const c=cellCls(m,i);const ds=drafts[m.id]||{};
-  let body;
-  if(c==="s")body='<p class="small">You\'re usually not available on '+(kind(s)==="sun"?"Sundays":"Wednesdays")+'. Can you make this one?</p><div class="row"><button class="btn primary" data-a="back">I can make it this date</button><button class="btn" data-a="close">Close</button></div>';
-  else if(c==="x")body='<p class="small">You\'re marked away. Situation changed?</p><div class="row"><button class="btn primary" data-a="back">I can make it now</button><button class="btn" data-a="close">Close</button></div>';
-  else if(c==="p")body='<p class="small">Sent. Waiting to be noted by the Bandmaster. Sent by mistake, or plans changed? Cancel it and it comes straight off.</p><div class="row"><button class="btn primary" data-a="cancel">Cancel this date</button><button class="btn" data-a="close">Close</button></div>';
-  else if(c==="dc")body='<p class="small">Ready to cancel this date.</p><div class="row"><button class="btn primary" data-a="uncancel">Undo</button><button class="btn" data-a="close">Close</button></div>';
-  else if(c==="cs")body='<p class="small">Cancellation sent. This date will show as available shortly.</p><div class="row"><button class="btn" data-a="close">Close</button></div>';
-  else if(c==="r")body='<p class="small">You said you can make it. Waiting to be noted by the Bandmaster. Sent by mistake, or plans changed again? Cancel it and you stay marked away.</p><div class="row"><button class="btn primary" data-a="unback2">Cancel "can make it"</button><button class="btn" data-a="close">Close</button></div>';
-  else if(c==="du")body='<p class="small">Ready to tell the Bandmaster you are away after all.</p><div class="row"><button class="btn primary" data-a="ununback">Undo</button><button class="btn" data-a="close">Close</button></div>';
-  else if(c==="us")body='<p class="small">Sent. You stay marked away for this date.</p><div class="row"><button class="btn" data-a="close">Close</button></div>';
-  else if(c==="db")body='<p class="small">Ready to tell the Bandmaster you can make it.</p><div class="row"><button class="btn primary" data-a="unback">Undo</button><button class="btn" data-a="close">Cancel</button></div>';
-  else if(c==="dr")body='<p class="small">Ready to send'+(ds[s]?': '+esc(ds[s]):'')+'.</p><div class="row"><button class="btn primary" data-a="undo">Remove</button><button class="btn" data-a="close">Cancel</button></div>';
-  else body='<label class="f">Reason (optional)<input id="rsn" maxlength="80" placeholder="e.g. holidays"></label><div class="row"><button class="btn primary" data-a="away">Away</button><button class="btn" data-a="close">Cancel</button></div>';
-  $("sheetInner").innerHTML='<h2>'+esc(m.name)+'</h2><div class="small muted">'+esc(m.part)+' · '+fmt(s,true)+(kind(s)==="sun"?" meeting":" practice")+(evOn(s).length?' · ★ '+esc(evOn(s).map(e=>e.title).join("; ")):'')+'</div>'+body;
-  $("sheet").hidden=false;const r=$("rsn");if(r)r.focus();
-  $("sheetInner").onclick=e=>{const b=e.target.closest("button[data-a]");if(!b)return;const a=b.dataset.a;
-    if(a==="away"){(drafts[m.id]=drafts[m.id]||{})[s]=($("rsn").value||"").trim();}
-    if(a==="undo"){delete (drafts[m.id]||{})[s];if(drafts[m.id]&&!Object.keys(drafts[m.id]).length)delete drafts[m.id]}
-    if(a==="back"){(backs[m.id]=backs[m.id]||{})[s]=true}
-    if(a==="cancel"){(cancels[m.id]=cancels[m.id]||{})[s]=true}
-    if(a==="unback2"){(unbacks[m.id]=unbacks[m.id]||{})[s]=true}
-    if(a==="ununback"){delete (unbacks[m.id]||{})[s];if(unbacks[m.id]&&!Object.keys(unbacks[m.id]).length)delete unbacks[m.id]}
-    if(a==="uncancel"){delete (cancels[m.id]||{})[s];if(cancels[m.id]&&!Object.keys(cancels[m.id]).length)delete cancels[m.id]}
-    if(a==="unback"){delete (backs[m.id]||{})[s];if(backs[m.id]&&!Object.keys(backs[m.id]).length)delete backs[m.id]}
-    store.set("band.drafts",drafts);store.set("band.backs",backs);store.set("band.cancels",cancels);store.set("band.unbacks",unbacks);$("sheet").hidden=true;renderMine()};
-}
-document.addEventListener("click",e=>{const p=e.target.closest("button.pill[data-i]");if(p)openSheet(+p.dataset.i)});
-document.addEventListener("keydown",e=>{if(e.key==="Escape")$("sheet").hidden=true});
-// One-off "who are you" step. Remembered on this phone until they sign out or the page password changes.
+  const up=upcoming();
+  if(dview==="cal"){area.innerHTML=calHtml(m,up);return}
+  const shown=showAll?up:up.slice(0,10);let h="",mon=null;
+  for(const i of shown){const s=D.sessions[i],mm=P(s).getMonth();if(mm!==mon){mon=mm;h+='<div class="month">'+MONL[mm]+'</div>'}h+=cardHtml(m,i,false)}
+  if(!showAll&&up.length>shown.length)h+='<button type="button" class="btn wide" id="moreBtn">Show more dates, to '+fmt(D.sessions[up[up.length-1]],true)+'</button>';
+  area.innerHTML=h||'<p class="muted">No band dates coming up.</p>'}
+function calHtml(m,up){if(!up.length)return '<p class="muted">No band dates coming up.</p>';
+  const months=[...new Set(up.map(i=>D.sessions[i].slice(0,7)))];
+  if(!calM||!months.includes(calM))calM=months[0];
+  const inM=up.filter(i=>D.sessions[i].startsWith(calM));if(calSel==null||!inM.includes(calSel))calSel=inM[0];
+  const [y,mo]=calM.split("-").map(Number),first=new Date(y,mo-1,1),days=new Date(y,mo,0).getDate(),lead=(first.getDay()+6)%7;
+  const byIso={};up.forEach(i=>byIso[D.sessions[i]]=i);
+  let g='<span class="dow">M</span><span class="dow">T</span><span class="dow">W</span><span class="dow">T</span><span class="dow">F</span><span class="dow">S</span><span class="dow">S</span>';
+  for(let k=0;k<lead;k++)g+='<span class="d"></span>';
+  for(let d=1;d<=days;d++){const s=calM+"-"+String(d).padStart(2,"0"),i=byIso[s];
+    if(i==null)g+='<span class="d">'+d+'</span>';
+    else{const e=eff(m,i);g+='<button type="button" class="d '+e.st+(i===calSel?' sel':'')+'" data-day="'+i+'" aria-label="'+esc(fmtLong(s))+', '+esc(ST[e.st][0])+'">'+d+'</button>'}}
+  const pi=months.indexOf(calM);
+  return '<div class="cal"><div class="ch"><button type="button" class="ib" data-cm="-1" aria-label="Previous month"'+(pi<=0?' disabled':'')+'>‹</button><b>'+MONL[mo-1]+' '+y+'</b><button type="button" class="ib" data-cm="1" aria-label="Next month"'+(pi>=months.length-1?' disabled':'')+'>›</button></div>'
+   +'<div class="grid7">'+g+'</div><div class="leg"><span><i style="background:var(--ok-soft);border:1px solid var(--ok)"></i>In</span><span><i style="background:var(--bad)"></i>Away</span><span><i style="border:2px dashed var(--wait)"></i>Sent</span></div></div>'
+   +(calSel!=null?cardHtml(m,calSel,false):'')}
+function noteHtml(n,btn){return '<div class="msg'+(btn?'':' read')+'"><span class="from">'+(btn?'From the Bandmaster':'Read')+(n.date?' · '+esc(fmt(n.date,true)):'')+'</span><div class="nt">'+linky(n.text)+'</div>'+(btn?'<button type="button" class="btn brass" data-noted="'+esc(n.id)+'">Noted</button>':'')+'</div>'}
+function linky(t){return String(t||"").split(" ").map(w=>/^https?:/.test(w)?'<a href="'+esc(w)+'" target="_blank" rel="noopener">'+esc(w)+'</a>':esc(w)).join(" ")}
+function notesSplit(){const N=D.notes||[],seen=store.get("band.noted",{});const isNew=n=>seen[n.id]!==n.v;return {fresh:N.filter(isNew),old:N.filter(n=>!isNew(n))}}
+function renderNotes(){const {fresh,old}=notesSplit();
+  $("noteTop").innerHTML=fresh.length?noteHtml(fresh[0],true)+(fresh.length>1?'<p class="more">'+(fresh.length-1)+' more in Messages</p>':''):'';
+  $("msgs").innerHTML=(fresh.map(n=>noteHtml(n,true)).join("")+old.map(n=>noteHtml(n,false)).join(""))||'<p class="muted">No messages from the Bandmaster yet.</p>';
+  const b=$("mBadge");b.hidden=!fresh.length;b.textContent=fresh.length}
+function renderTabs(){for(const v of ["week","dates","msg"])$("v-"+v).hidden=v!==tab;
+  for(const b of document.querySelectorAll("#tbar button"))if(b.dataset.tab===tab)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")}
+function renderAll(){renderTabs();renderNotes();renderWeek();renderDates();renderToast()}
+function setTab(t){tab=t;store.set("band2.tab",t);renderTabs();window.scrollTo(0,0)}
+
+// ----- sending (one confirm, 5 second Undo, then off to the Bandmaster) -----
+const UNDO_MS=5000;
+const gsr=()=>window.__bandGsr||((typeof google!=="undefined"&&google.script&&google.script.run&&typeof google.script.run.sendFromPage==="function")?google.script.run:null);
+function cmdFor(m,s,want,reason){const i=D.sessions.indexOf(s),c=m.cells[i];
+  const au=(kind(s)==="sun"?"Sun ":"Wed ")+s.slice(8,10)+"/"+s.slice(5,7)+"/"+s.slice(0,4);
+  if(want==="away")return ["r","x","s"].includes(c)?au+" UNDO AVAILABLE":au+(reason?" ("+reason.replace(/[();]/g,"")+")":"");
+  return ["","p"].includes(c)?au+" CANCEL":au+" AVAILABLE"}
+let qTimer=null,tickTimer=null,toastMsg=null;
+function saveQ(){store.set("band2.queue",queue)}
+function enqueue(m,items){if(!gsr()){showMsg("Sending isn't available on this page","Open the band app to change your dates.");return}
+  if(queue)flush();
+  queue={mid:m.id,items,at:Date.now()};saveQ();toastMsg=null;
+  clearTimeout(qTimer);qTimer=setTimeout(flush,UNDO_MS);
+  renderAll()}
+function undo(){if(!queue)return;clearTimeout(qTimer);queue=null;saveQ();renderAll()}
+function flush(){clearTimeout(qTimer);if(!queue)return;const q=queue,m=D.members.find(x=>x.id===q.mid),g=gsr();
+  if(!m||!g){queue=null;saveQ();renderAll();return}
+  const txt=q.items.map(x=>cmdFor(m,x.date,x.want,x.reason)).join("; ");
+  const id=Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+  // show it as sent straight away; only roll back if the send fails
+  const im=intents[m.id]=intents[m.id]||{};q.items.forEach(x=>{const i=D.sessions.indexOf(x.date);im[x.date]={want:x.want,at:Date.now(),base:m.cells[i]}});
+  store.set("band2.intents",intents);queue=null;saveQ();renderAll();
+  g.withSuccessHandler(()=>{}).withFailureHandler(()=>{q.items.forEach(x=>{delete (intents[m.id]||{})[x.date]});store.set("band2.intents",intents);
+    queue=Object.assign({},q,{failed:true});saveQ();showMsg("Not sent","Check your internet connection, then tap Try again.",true)}).sendFromPage(m.formName,txt,id)}
+function retry(){if(!queue)return;queue.failed=false;queue.at=Date.now()-UNDO_MS;toastMsg=null;flush()}
+function showMsg(t,sub,canRetry){toastMsg={t,sub,retry:!!canRetry};renderToast();if(!canRetry){clearTimeout(showMsg._t);showMsg._t=setTimeout(()=>{toastMsg=null;renderToast()},4000)}}
+function renderToast(){const el=$("toast");clearInterval(tickTimer);
+  if(toastMsg){el.innerHTML='<span class="ttxt">'+esc(toastMsg.t)+(toastMsg.sub?'<small>'+esc(toastMsg.sub)+'</small>':'')+'</span>'+(toastMsg.retry?'<button type="button" data-retry>Try again</button>':'');el.hidden=false;return}
+  if(!queue||queue.failed){el.hidden=true;el.innerHTML="";return}
+  const left=()=>Math.max(1,Math.ceil((UNDO_MS-(Date.now()-queue.at))/1000)),el0=Math.min(UNDO_MS,Date.now()-queue.at);
+  const n=queue.items.length;
+  el.innerHTML='<span class="tcount" aria-hidden="true"><svg viewBox="0 0 36 36"><circle class="trk" cx="18" cy="18" r="15"/><circle class="drn" cx="18" cy="18" r="15" style="animation-delay:-'+el0+'ms"/></svg><b id="tnum">'+left()+'</b></span><span class="ttxt">Sent to the Bandmaster'+(n>1?'<small>'+n+' dates</small>':'')+'</span><button type="button" data-undo>Undo</button>';
+  el.hidden=false;tickTimer=setInterval(()=>{if(!queue){clearInterval(tickTimer);return}const t=$("tnum");if(t)t.textContent=left()},250)}
+// don't lose a change if the app is closed during the Undo time
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"&&queue&&!queue.failed)flush()});
+window.addEventListener("pagehide",()=>{if(queue&&!queue.failed)flush()});
+
+// ----- sheets -----
+let sheetKind=null,reason="",pendingSet=null,rangeSel=null;
+function openSheet(html,k){sheetKind=k;$("sheetInner").innerHTML=html;$("sheet").hidden=false}
+function closeSheet(){$("sheet").hidden=true;$("sheetInner").innerHTML="";sheetKind=null}
+const REASONS=["Holidays","Work","Unwell","Family","Other"];
+function reasonsHtml(){return '<div class="reasons">'+REASONS.map(r=>'<button type="button" data-reason="'+r+'" aria-pressed="'+(reason===r)+'">'+r+'</button>').join("")+'</div>'+(reason==="Other"?'<input type="text" id="rOther" maxlength="60" placeholder="Type a short reason (optional)">':'')}
+function confirmSheet(i,want){const s=D.sessions[i];pendingSet={i,want};reason="";
+  if(want==="away")openSheet('<h2>Away on '+esc(fmtLong(s))+'?</h2><p class="sub">Add a reason if you like. You can skip this.</p><div id="rbox">'+reasonsHtml()+'</div><button type="button" class="btn brass" data-confirm>Yes, tell the Bandmaster</button><button type="button" class="btn" data-close>No, go back</button>',"confirm");
+  else openSheet('<h2>Can make it on '+esc(fmtLong(s))+'?</h2><p class="sub">We\'ll let the Bandmaster know you\'ll be there.</p><button type="button" class="btn brass" data-confirm>Yes, tell the Bandmaster</button><button type="button" class="btn" data-close>No, go back</button>',"confirm")}
+function reasonVal(){if(reason!=="Other")return reason;const o=$("rOther");return (o&&o.value.trim())||"Other"}
+function rangeSheet(){const m=me();if(!m)return;reason="";
+  const t=new Date(),f=iso(t),l=iso(new Date(t.getFullYear(),t.getMonth(),t.getDate()+14));
+  openSheet('<h2>When are you away?</h2><div class="two"><label class="fl">First day away<input type="date" id="rgF" value="'+f+'"></label><label class="fl">Last day away<input type="date" id="rgT" value="'+l+'"></label></div><div id="rgList"></div><div class="sec">Reason (optional)</div><div id="rbox">'+reasonsHtml()+'</div><button type="button" class="btn brass" data-rgo>Yes, tell the Bandmaster</button><button type="button" class="btn" data-close>No, go back</button>',"range");
+  rangeSel=null;rangeList()}
+function rangeList(){const m=me(),f=$("rgF").value,t=$("rgT").value;const box=$("rgList");if(!box)return;
+  const a=f&&t&&t<f?t:f,b=f&&t&&t<f?f:t;
+  const ds=upcoming().filter(i=>{const s=D.sessions[i];return a&&b&&s>=a&&s<=b});
+  if(!rangeSel)rangeSel={};
+  if(!ds.length){box.innerHTML='<p class="muted">No band dates between those days.</p>';updRangeBtn(0);return}
+  box.innerHTML='<p class="sub">Untick any you can still make.</p><ul class="ticks">'+ds.map(i=>{const s=D.sessions[i],e=eff(m,i),done=e.want==="away";
+    if(rangeSel[s]===undefined)rangeSel[s]=!done;
+    return '<li><label><input type="checkbox" data-rg="'+s+'"'+(rangeSel[s]?' checked':'')+(done?' disabled':'')+'><span class="tk"><b>'+esc(fmt(s,true))+'</b><small>'+kindLabel(s)+(done?(e.st==="usual"?' · not usually on '+(kind(s)==="sun"?"Sundays":"Wednesdays"):' · already away'):'')+'</small></span></label></li>'}).join("")+'</ul>';
+  updRangeBtn(ds.filter(i=>rangeSel[D.sessions[i]]&&eff(m,i).want!=="away").length)}
+function updRangeBtn(n){const b=document.querySelector("[data-rgo]");if(!b)return;b.disabled=!n;b.textContent=n?"Yes, tell the Bandmaster ("+n+" date"+(n>1?"s":"")+")":"No dates picked"}
+function recSheet(r){const url=String(r.l||"").trim();let body="";
+  const yt=ytId(url);
+  if(yt)body='<div class="vid"><iframe src="https://www.youtube-nocookie.com/embed/'+yt.id+'?rel=0&playsinline=1&autoplay=1'+(yt.start?'&start='+yt.start:'')+'" title="'+esc(r.t)+'" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div><a class="btn wide" href="'+esc(url)+'" target="_blank" rel="noopener">Open in YouTube</a><p class="small muted">If the video won\'t play here, tap Open in YouTube.</p>';
+  else if(/\.(mp3|m4a|aac|wav|ogg)(\?|$)/i.test(url))body='<audio controls autoplay preload="auto" src="'+esc(url)+'"></audio>';
+  else body='<a class="btn brass wide" href="'+esc(url)+'" target="_blank" rel="noopener">Open the recording</a>';
+  openSheet('<span class="ev" style="font-size:.9rem">Recording</span><h2>'+esc(r.t)+'</h2>'+(r.i?'<p class="sub">'+esc(r.i)+'</p>':'')+body+'<button type="button" class="btn navy" data-close>Close</button>',"rec")}
+function ytId(u){let m=u.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);if(!m)return null;
+  const t=u.match(/[?&#](?:t|start)=(\d+h)?(\d+m)?(\d+)s?/);let start=0;if(t)start=(parseInt(t[1])||0)*3600+(parseInt(t[2])||0)*60+(parseInt(t[3])||0);
+  return {id:m[1],start}}
+const onAppsScript=/googleusercontent\.com$/.test(location.hostname)&&D.form&&D.form.quick;
+function sizeSheet(){const m=me();const nm=m?(m.short||m.name.split(" ")[0]):"";
+  openSheet('<h2>Text size</h2><p class="sub">Changes this phone only.</p><div class="sizes">'+[[17,"Normal"],[20,"Large"],[23,"Larger"]].map(z=>'<button type="button" data-fs="'+z[0]+'" aria-pressed="'+(fs===z[0])+'"><span style="font-size:'+z[0]+'px">Aa</span><small>'+z[1]+'</small></button>').join("")+'</div>'
+   +(m?'<div class="sec">Your name</div><div class="setrow"><b>'+esc(m.name)+'</b>'+(onAppsScript?'<a class="lnk" href="'+esc(D.form.quick)+'" target="_top" id="signOut">Not '+esc(nm)+'? Change</a>':'<button type="button" class="lnk" id="signOut">Not '+esc(nm)+'? Change</button>')+'</div>':'')
+   +'<p class="small muted">'+(window.__bandAppVer?'App v'+esc(window.__bandAppVer):'Band page')+'</p><button type="button" class="btn navy" data-close>Done</button>',"size")}
+
+// ----- events -----
+document.addEventListener("click",e=>{
+  const t=e.target;
+  const tb=t.closest("#tbar button[data-tab]");if(tb){setTab(tb.dataset.tab);return}
+  const sb=t.closest("button[data-set]");if(sb){const m=me(),i=+sb.dataset.i;if(!m)return;if(eff(m,i).want===sb.dataset.set)return;confirmSheet(i,sb.dataset.set);return}
+  const rb=t.closest("button[data-rec]");if(rb){const r=recs[+rb.dataset.rec];if(r)recSheet(r);return}
+  const nb=t.closest("button[data-noted]");if(nb){const n=(D.notes||[]).find(x=>x.id===nb.dataset.noted);if(!n)return;const seen=store.get("band.noted",{});seen[n.id]=n.v;store.set("band.noted",seen);renderNotes();return}
+  const vb=t.closest("button[data-view]");if(vb){dview=vb.dataset.view;store.set("band2.dview",dview);renderDates();return}
+  const cm=t.closest("button[data-cm]");if(cm){const up=upcoming(),months=[...new Set(up.map(i=>D.sessions[i].slice(0,7)))];const k=months.indexOf(calM)+(+cm.dataset.cm);if(months[k]){calM=months[k];calSel=null}renderDates();return}
+  const dy=t.closest("button[data-day]");if(dy){calSel=+dy.dataset.day;renderDates();return}
+  if(t.closest("#moreBtn")){showAll=true;renderDates();return}
+  if(t.closest("#rangeBtn")){rangeSheet();return}
+  if(t.closest("#sizeBtn")){sizeSheet();return}
+  if(t.closest("[data-undo]")){undo();return}
+  if(t.closest("[data-retry]")){retry();return}
+});
+$("sheet").addEventListener("click",e=>{const t=e.target;
+  if(t===$("sheet")||t.closest("[data-close]")){closeSheet();return}
+  const r=t.closest("button[data-reason]");if(r){const keep=$("rOther")?$("rOther").value:"";reason=reason===r.dataset.reason?"":r.dataset.reason;$("rbox").innerHTML=reasonsHtml();if($("rOther")){$("rOther").value=keep;$("rOther").focus()}return}
+  if(t.closest("[data-confirm]")&&pendingSet){const m=me(),s=D.sessions[pendingSet.i];const it={date:s,want:pendingSet.want,reason:pendingSet.want==="away"?reasonVal():""};closeSheet();pendingSet=null;enqueue(m,[it]);return}
+  if(t.closest("[data-rgo]")){const m=me(),rs=reasonVal();const items=upcoming().map(i=>D.sessions[i]).filter(s=>rangeSel&&rangeSel[s]&&eff(m,D.sessions.indexOf(s)).want!=="away").map(s=>({date:s,want:"away",reason:rs}));if(!items.length)return;closeSheet();enqueue(m,items);return}
+  const f=t.closest("button[data-fs]");if(f){fs=+f.dataset.fs;store.set("band2.fs",fs);document.documentElement.style.setProperty("--fs",fs+"px");for(const b of document.querySelectorAll("[data-fs]"))b.setAttribute("aria-pressed",String(+b.dataset.fs===fs));return}
+  const so=t.closest("#signOut");if(so){store.set("band.who","");try{localStorage.removeItem("band.pagepw")}catch(x){}
+    if(!onAppsScript){e.preventDefault();who="";$("who").value="";$("pickGo").disabled=true;closeSheet();$("pick").hidden=false;renderAll()}}
+});
+$("sheet").addEventListener("change",e=>{const c=e.target.closest("input[data-rg]");if(c){rangeSel[c.dataset.rg]=c.checked;rangeList();return}
+  if(e.target.id==="rgF"||e.target.id==="rgT"){rangeSel=null;rangeList()}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("sheet").hidden)closeSheet()});
+
+// ----- who are you (once per phone) -----
 if(store.get("band.whoSince","")!==(D.pwSince||"")){who="";store.set("band.who","")}
 const sel=$("who");
 sel.innerHTML+=D.members.filter(m=>m.player).slice().sort((a,b)=>a.formName.localeCompare(b.formName)).map(m=>'<option value="'+esc(m.id)+'">'+esc(m.formName||m.name)+'</option>').join("");
 sel.addEventListener("change",()=>{$("pickGo").disabled=!sel.value});
-$("pickGo").addEventListener("click",()=>{if(!sel.value)return;who=sel.value;store.set("band.who",who);store.set("band.whoSince",D.pwSince||"");$("pick").hidden=true;renderWho();renderNotes();renderMine();window.scrollTo(0,0)});
-const onAppsScript=/googleusercontent\.com$/.test(location.hostname)&&D.form.quick;
-function renderWho(){const m=D.members.find(x=>x.id===who);
-  $("whobar").innerHTML=m?(onAppsScript?'<a id="signOut" href="'+esc(D.form.quick)+'" target="_top">Not '+esc(m.short||m.name.split(" ")[0])+'? Switch</a>':'<button type="button" id="signOut">Not '+esc(m.short||m.name.split(" ")[0])+'? Switch</button>'):'';
-  const so=$("signOut");if(so)so.addEventListener("click",e=>{store.set("band.who","");try{localStorage.removeItem("band.pagepw")}catch(x){}
-    if(!onAppsScript){e.preventDefault();who="";sel.value="";$("pickGo").disabled=true;$("pick").hidden=false;renderWho();renderMine()}})}
-if(!who){$("pick").hidden=false}
-renderWho();
-// forget "sent" markers once the roster shows them, or after the dates pass
-for(const id in sent){const m=D.members.find(x=>x.id===id);for(const s in sent[id]){const i=D.sessions.indexOf(s);if(i<0||(m&&m.cells[i]!==""))delete sent[id][s]}}
-store.set("band.sent",sent);
-for(const id in sentBacks){const m=D.members.find(x=>x.id===id);for(const s in sentBacks[id]){const i=D.sessions.indexOf(s);if(i<0||!m||(m.cells[i]!=="x"&&m.cells[i]!=="p"&&m.cells[i]!=="s"))delete sentBacks[id][s]}}
-store.set("band.sentBacks",sentBacks);
-for(const id in sentCancels){const m=D.members.find(x=>x.id===id);for(const s in sentCancels[id]){const i=D.sessions.indexOf(s);if(i<0||!m||m.cells[i]!=="p"&&!(sent[id]||{})[s])delete sentCancels[id][s]}}
-store.set("band.sentCancels",sentCancels);
-for(const id in sentUnbacks){const m=D.members.find(x=>x.id===id);for(const s in sentUnbacks[id]){const i=D.sessions.indexOf(s);if(i<0||!m||m.cells[i]!=="r")delete sentUnbacks[id][s]}}
-store.set("band.sentUnbacks",sentUnbacks);
-function linky(t){return String(t||"").split(" ").map(w=>/^https?:/.test(w)?'<a href="'+esc(w)+'" target="_blank" rel="noopener">'+esc(w)+'</a>':esc(w)).join(" ")}
-function renderNotes(){const box=$("notes");const N=D.notes||[];if(!N.length){box.hidden=true;box.innerHTML="";return}
-  const seen=store.get("band.noted",{});const isNew=n=>seen[n.id]!==n.v;const fresh=N.filter(isNew),old=N.filter(n=>!isNew(n));
-  const item=(n,btn)=>'<li><div class="nd">'+(n.date?esc(fmt(n.date,true)):"")+'</div><div class="nt">'+linky(n.text)+'</div>'+(btn?'<button class="btn noted" data-noted="'+esc(n.id)+'">Noted</button>':"")+'</li>';
-  const oldOpen=store.get("band.oldOpen",false);
-  box.hidden=false;box.className="notes"+(fresh.length?"":" quiet");
-  if(fresh.length)box.innerHTML='<div class="notes-h"><span>From the Bandmaster</span>'+(fresh.length>1?'<i>'+fresh.length+' new</i>':'')+'</div><ul class="nl">'+fresh.map(n=>item(n,true)).join("")+'</ul>'
-    +(old.length?'<details class="oldn"'+(oldOpen?" open":"")+'><summary>Old messages ('+old.length+')</summary><ul class="nl old">'+old.map(n=>item(n,false)).join("")+'</ul></details>':"");
-  else box.innerHTML='<details class="oldn"'+(oldOpen?" open":"")+'><summary><span>Notes from the Bandmaster · all read</span><span>Old ('+old.length+')</span></summary><ul class="nl old">'+old.map(n=>item(n,false)).join("")+'</ul></details>';
-  const dt=box.querySelector("details.oldn");if(dt)dt.addEventListener("toggle",()=>store.set("band.oldOpen",dt.open))}
-$("notes").addEventListener("click",e=>{const b=e.target.closest("button[data-noted]");if(!b)return;const n=(D.notes||[]).find(x=>x.id===b.dataset.noted);if(!n)return;const seen=store.get("band.noted",{});seen[n.id]=n.v;store.set("band.noted",seen);renderNotes()});
+$("pickGo").addEventListener("click",()=>{if(!sel.value)return;who=sel.value;store.set("band.who",who);store.set("band.whoSince",D.pwSince||"");$("pick").hidden=true;renderAll();window.scrollTo(0,0)});
+if(!who)$("pick").hidden=false;
+
+// ----- header -----
 function whenText(t){if(isNaN(t))return "";const h=t.getHours(),mi=String(t.getMinutes()).padStart(2,"0");const tm=((h%12)||12)+":"+mi+(h<12?"am":"pm");
-  const same=t.toDateString()===new Date().toDateString();return (same?"today":DOW[t.getDay()]+" "+t.getDate()+" "+MON[t.getMonth()])+" "+tm}
-function updText(){const v=window.__bandAppVer?"App v"+window.__bandAppVer+" · ":"";return v+updText0()}
-function updText0(){const st=window.__bandStatus;if(st&&st.checking)return "Checking for updates…";
-  if(st&&st.checked)return (st.offline?"Offline · last checked ":"Updated ")+whenText(new Date(st.checked));
-  if(!D.updatedAt)return D.updated?"Updated "+D.updated:"";const t=new Date(D.updatedAt);return isNaN(t)?"Updated "+(D.updated||""):"Updated "+whenText(t)}
-function renderTop(){$("tbupd").textContent=updText();const r=$("refresh");if(window.__bandRefresh){r.addEventListener("click",e=>{e.preventDefault();window.__bandRefresh()})}else if(onAppsScript){r.href=D.form.quick;r.target="_top"}else r.addEventListener("click",e=>{e.preventDefault();location.reload()})}
-renderTop();renderNotes();renderMine();
-window.__bandRerender=function(){$("tbupd").textContent=updText();renderWho();renderNotes();renderMine()};
+  return t.toDateString()===new Date().toDateString()?tm:DOW[t.getDay()]+" "+t.getDate()+" "+MON[t.getMonth()]+" "+tm}
+function updText(){const v=window.__bandAppVer?"v"+window.__bandAppVer+" · ":"";const st=window.__bandStatus;
+  if(st&&st.checking)return v+"Checking…";
+  if(st&&st.checked)return v+(st.offline?"Offline · ":"Updated ")+whenText(new Date(st.checked));
+  const t=new Date(D.updatedAt||"");return v+(isNaN(t)?(D.updated?"Updated "+D.updated:""):"Updated "+whenText(t))}
+(function renderTop(){$("tbupd").textContent=updText();const r=$("refresh");
+  if(window.__bandRefresh)r.addEventListener("click",e=>{e.preventDefault();window.__bandRefresh()});
+  else if(onAppsScript){r.href=D.form.quick;r.target="_top"}
+  else r.addEventListener("click",e=>{e.preventDefault();location.reload()})})();
+
+if(queue&&!queue.failed)setTimeout(flush,800);   // left over from last time the app was open
+renderAll();
+window.__bandRerender=function(){$("tbupd").textContent=updText();if(!D.members.some(m=>m.id===who)){who="";$("pick").hidden=false}renderAll()};
 })();
 };</script>
 <script>
 (function(){
 "use strict";
 var API="https://script.google.com/macros/s/AKfycbyicvqPU2m1jZ4yLrbjZCFO2o-fEr2UdV1A44Wgd8dOGOhgwjMjfH__ndfWq8qbjNDX/exec",KK="band.k",KD="band.data";
-window.__bandAppVer="1.4";
+window.__bandAppVer="2.0";
 var st={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},del:function(k){try{localStorage.removeItem(k)}catch(e){}}};
 var $=function(id){return document.getElementById(id)};
 function sha(s){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ("0"+x.toString(16)).slice(-2)}).join("")})}
 function call(p){var q=Object.keys(p).map(function(k){return encodeURIComponent(k)+"="+encodeURIComponent(p[k])}).join("&");
-  return fetch(API+"?"+q,{redirect:"follow",cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()})}
+  return fetch(API+"?"+q,{redirect:"follow",cache:"no-store",keepalive:p.api==="send"}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()})}
 // sending from the page goes through the same API, shaped like google.script.run
 function mk(ok,fail){return{withSuccessHandler:function(f){return mk(f,fail)},withFailureHandler:function(f){return mk(ok,f)},
   sendFromPage:function(n,d,id){call({api:"send",k:st.get(KK)||"",n:n,d:d,id:id}).then(function(r){

@@ -1,5 +1,5 @@
 // Wollongong Salvo Band app: keeps the app shell available offline. Roster data always comes live from the API.
-const C = "band-shell-v1";
+const C = "band-shell-v2";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon-180.png", "./icon-192.png"];
 self.addEventListener("install", e => { self.skipWaiting(); e.waitUntil(caches.open(C).then(c => c.addAll(SHELL))); });
 self.addEventListener("activate", e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== C).map(k => caches.delete(k)))).then(() => self.clients.claim())));
