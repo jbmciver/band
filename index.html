@@ -336,7 +336,8 @@ function renderNotes(){const box=$("notes");const N=D.notes||[];if(!N.length){bo
 $("notes").addEventListener("click",e=>{const b=e.target.closest("button[data-noted]");if(!b)return;const n=(D.notes||[]).find(x=>x.id===b.dataset.noted);if(!n)return;const seen=store.get("band.noted",{});seen[n.id]=n.v;store.set("band.noted",seen);renderNotes()});
 function whenText(t){if(isNaN(t))return "";const h=t.getHours(),mi=String(t.getMinutes()).padStart(2,"0");const tm=((h%12)||12)+":"+mi+(h<12?"am":"pm");
   const same=t.toDateString()===new Date().toDateString();return (same?"today":DOW[t.getDay()]+" "+t.getDate()+" "+MON[t.getMonth()])+" "+tm}
-function updText(){const st=window.__bandStatus;if(st&&st.checking)return "Checking for updates…";
+function updText(){const v=window.__bandAppVer?"App v"+window.__bandAppVer+" · ":"";return v+updText0()}
+function updText0(){const st=window.__bandStatus;if(st&&st.checking)return "Checking for updates…";
   if(st&&st.checked)return (st.offline?"Offline · last checked ":"Updated ")+whenText(new Date(st.checked));
   if(!D.updatedAt)return D.updated?"Updated "+D.updated:"";const t=new Date(D.updatedAt);return isNaN(t)?"Updated "+(D.updated||""):"Updated "+whenText(t)}
 function renderTop(){$("tbupd").textContent=updText();const r=$("refresh");if(window.__bandRefresh){r.addEventListener("click",e=>{e.preventDefault();window.__bandRefresh()})}else if(onAppsScript){r.href=D.form.quick;r.target="_top"}else r.addEventListener("click",e=>{e.preventDefault();location.reload()})}
@@ -348,6 +349,7 @@ window.__bandRerender=function(){$("tbupd").textContent=updText();renderWho();re
 (function(){
 "use strict";
 var API="https://script.google.com/macros/s/AKfycbyicvqPU2m1jZ4yLrbjZCFO2o-fEr2UdV1A44Wgd8dOGOhgwjMjfH__ndfWq8qbjNDX/exec",KK="band.k",KD="band.data";
+window.__bandAppVer="1.3";
 var st={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},del:function(k){try{localStorage.removeItem(k)}catch(e){}}};
 var $=function(id){return document.getElementById(id)};
 function sha(s){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ("0"+x.toString(16)).slice(-2)}).join("")})}
