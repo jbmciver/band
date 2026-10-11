@@ -332,7 +332,16 @@ function calHtml(m,up){if(!up.length)return '<p class="muted">No band dates comi
    +(calSel!=null?cardHtml(m,calSel,false):'')}
 function noteHtml(n,btn){return '<div class="msg'+(btn?'':' read')+'"><span class="from">'+(btn?'From the Bandmaster':'Read')+(n.date?' · '+esc(fmt(n.date,true)):'')+'</span><div class="nt">'+linky(n.text)+'</div>'+(btn?'<button type="button" class="btn brass" data-noted="'+esc(n.id)+'">Noted</button>':'')+'</div>'}
 function linky(t){return String(t||"").split(" ").map(w=>/^https?:/.test(w)?'<a href="'+esc(w)+'" target="_blank" rel="noopener">'+esc(w)+'</a>':esc(w)).join(" ")}
-function notesSplit(){const N=D.notes||[],seen=store.get("band.noted",{});const isNew=n=>seen[n.id]!==n.v;return {fresh:N.filter(isNew),old:N.filter(n=>!isNew(n))}}
+// Noted taps are kept on this phone AND sent to the Bandmaster's record, so a note read on one device is read on all of them.
+function serverNoted(){const m=me();if(!m)return {};const o={},nb=(D.notedBy||{})[m.id]||{};for(const k in nb)o[k]=nb[k]&&nb[k].v;return Object.assign(o,window.__notedFor||{})}
+function notesSplit(){const N=D.notes||[],seen=store.get("band.noted",{}),srv=serverNoted();const isNew=n=>seen[n.id]!==n.v&&srv[n.id]!==n.v;return {fresh:N.filter(isNew),old:N.filter(n=>!isNew(n))}}
+function flushNoted(){const g=gsr(),q=store.get("band.notedQ",[]);if(!g||typeof g.notedFromPage!=="function"||!q.length)return;
+  q.forEach(x=>{g.withSuccessHandler(r=>{if(r&&r.ok===false)return;const k=store.get("band.notedQ",[]).filter(y=>!(y.m===x.m&&y.id===x.id&&y.v===x.v));store.set("band.notedQ",k)}).withFailureHandler(()=>{}).notedFromPage(x.m,x.id,x.v)})}
+function markNoted(n){const seen=store.get("band.noted",{});seen[n.id]=n.v;store.set("band.noted",seen);const m=me();
+  if(m){const q=store.get("band.notedQ",[]).filter(y=>!(y.m===m.id&&y.id===n.id));q.push({m:m.id,id:n.id,v:n.v});store.set("band.notedQ",q.slice(-40));flushNoted()}
+  renderNotes()}
+function loadNotedFor(){const g=gsr();if(window.__bandGsr||!g||typeof g.notedFor!=="function")return;const m=me();if(!m)return;
+  g.withSuccessHandler(o=>{if(o&&typeof o==="object"){window.__notedFor=o;renderNotes()}}).withFailureHandler(()=>{}).notedFor(m.id)}
 function renderNotes(){const {fresh,old}=notesSplit();
   $("noteTop").innerHTML=fresh.length?noteHtml(fresh[0],true)+(fresh.length>1?'<p class="more">'+(fresh.length-1)+' more in Messages</p>':''):'';
   $("msgs").innerHTML=(fresh.map(n=>noteHtml(n,true)).join("")+old.map(n=>noteHtml(n,false)).join(""))||'<p class="muted">No messages from the Bandmaster yet.</p>';
@@ -424,7 +433,7 @@ document.addEventListener("click",e=>{
   const tb=t.closest("#tbar button[data-tab]");if(tb){setTab(tb.dataset.tab);return}
   const sb=t.closest("button[data-set]");if(sb){const m=me(),i=+sb.dataset.i;if(!m)return;if(eff(m,i).want===sb.dataset.set)return;confirmSheet(i,sb.dataset.set);return}
   const rb=t.closest("button[data-rec]");if(rb){const r=recs[+rb.dataset.rec];if(r)recSheet(r);return}
-  const nb=t.closest("button[data-noted]");if(nb){const n=(D.notes||[]).find(x=>x.id===nb.dataset.noted);if(!n)return;const seen=store.get("band.noted",{});seen[n.id]=n.v;store.set("band.noted",seen);renderNotes();return}
+  const nb=t.closest("button[data-noted]");if(nb){const n=(D.notes||[]).find(x=>x.id===nb.dataset.noted);if(!n)return;markNoted(n);return}
   const vb=t.closest("button[data-view]");if(vb){dview=vb.dataset.view;store.set("band2.dview",dview);renderDates();return}
   const cm=t.closest("button[data-cm]");if(cm){const up=upcoming(),months=[...new Set(up.map(i=>D.sessions[i].slice(0,7)))];const k=months.indexOf(calM)+(+cm.dataset.cm);if(months[k]){calM=months[k];calSel=null}renderDates();return}
   const dy=t.closest("button[data-day]");if(dy){calSel=+dy.dataset.day;renderDates();return}
@@ -452,7 +461,9 @@ if(store.get("band.whoSince","")!==(D.pwSince||"")){who="";store.set("band.who",
 const sel=$("who");
 sel.innerHTML+=D.members.filter(m=>m.player).slice().sort((a,b)=>a.formName.localeCompare(b.formName)).map(m=>'<option value="'+esc(m.id)+'">'+esc(m.formName||m.name)+'</option>').join("");
 sel.addEventListener("change",()=>{$("pickGo").disabled=!sel.value});
-$("pickGo").addEventListener("click",()=>{if(!sel.value)return;who=sel.value;store.set("band.who",who);store.set("band.whoSince",D.pwSince||"");$("pick").hidden=true;renderAll();window.scrollTo(0,0)});
+$("pickGo").addEventListener("click",()=>{if(!sel.value)return;who=sel.value;store.set("band.who",who);store.set("band.whoSince",D.pwSince||"");$("pick").hidden=true;
+  const seen=store.get("band.noted",{}),m=me();if(m)(D.notes||[]).forEach(n=>{if(seen[n.id]===n.v)markNoted(n)});   // notes read before picking a name
+  loadNotedFor();renderAll();window.scrollTo(0,0)});
 if(!who)$("pick").hidden=false;
 
 // ----- header -----
@@ -468,6 +479,10 @@ function updText(){const v=window.__bandAppVer?"v"+window.__bandAppVer+" · ":""
   else r.addEventListener("click",e=>{e.preventDefault();location.reload()})})();
 
 if(queue&&!queue.failed)setTimeout(flush,800);   // left over from last time the app was open
+// one-off: send notes this phone already marked Noted before the Bandmaster's record existed
+if(me()&&!store.get("band.notedSynced",false)){const seen=store.get("band.noted",{}),q=store.get("band.notedQ",[]);
+  (D.notes||[]).forEach(n=>{if(seen[n.id]===n.v&&!q.some(y=>y.id===n.id))q.push({m:who,id:n.id,v:n.v})});store.set("band.notedQ",q);store.set("band.notedSynced",true)}
+setTimeout(flushNoted,1200);loadNotedFor();
 renderAll();
 window.__bandRerender=function(){$("tbupd").textContent=updText();if(!D.members.some(m=>m.id===who)){who="";$("pick").hidden=false}renderAll()};
 })();
@@ -476,16 +491,18 @@ window.__bandRerender=function(){$("tbupd").textContent=updText();if(!D.members.
 (function(){
 "use strict";
 var API="https://script.google.com/macros/s/AKfycbyicvqPU2m1jZ4yLrbjZCFO2o-fEr2UdV1A44Wgd8dOGOhgwjMjfH__ndfWq8qbjNDX/exec",KK="band.k",KD="band.data";
-window.__bandAppVer="2.0";
+window.__bandAppVer="2.1";
 var st={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},del:function(k){try{localStorage.removeItem(k)}catch(e){}}};
 var $=function(id){return document.getElementById(id)};
 function sha(s){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ("0"+x.toString(16)).slice(-2)}).join("")})}
 function call(p){var q=Object.keys(p).map(function(k){return encodeURIComponent(k)+"="+encodeURIComponent(p[k])}).join("&");
-  return fetch(API+"?"+q,{redirect:"follow",cache:"no-store",keepalive:p.api==="send"}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()})}
+  return fetch(API+"?"+q,{redirect:"follow",cache:"no-store",keepalive:p.api==="send"||p.api==="noted"}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()})}
 // sending from the page goes through the same API, shaped like google.script.run
 function mk(ok,fail){return{withSuccessHandler:function(f){return mk(f,fail)},withFailureHandler:function(f){return mk(ok,f)},
   sendFromPage:function(n,d,id){call({api:"send",k:st.get(KK)||"",n:n,d:d,id:id}).then(function(r){
-    if(r&&r.ok){ok&&ok({title:r.title,body:r.body})}else{fail&&fail(new Error((r&&r.error)||"failed"))}}).catch(function(e){fail&&fail(e)})}}}
+    if(r&&r.ok){ok&&ok({title:r.title,body:r.body})}else{fail&&fail(new Error((r&&r.error)||"failed"))}}).catch(function(e){fail&&fail(e)})},
+  notedFromPage:function(m,nid,v){call({api:"noted",k:st.get(KK)||"",m:m,nid:nid,v:v}).then(function(r){
+    if(r&&r.ok){ok&&ok(r)}else{fail&&fail(new Error((r&&r.error)||"failed"))}}).catch(function(e){fail&&fail(e)})}}}
 window.__bandGsr=mk(null,null);
 var booted=false;
 function boot(d){window.__BAND_DATA__=d;$("gate").hidden=true;if(!booted){booted=true;window.__bandBoot();setTimeout(installHint,1500)}}
