@@ -265,13 +265,17 @@ document.documentElement.style.setProperty("--fs",fs+"px");
 
 const me=()=>D.members.find(x=>x.id===who);
 const upcoming=()=>D.sessions.map((s,i)=>i).filter(i=>!isPast(D.sessions[i]));
-// tidy intents the roster now reflects, or that are old or past
-(function tidy(){const now=Date.now();
+// tidy intents the roster now reflects, or that are old or past.
+// Runs at start AND every time fresh roster data arrives. The band's script shows a member's change on the roster within seconds,
+// so once data fetched 2 minutes or more after a send has come in, the roster itself is the truth (even if the change was
+// noted, rejected or undone from another device in between) and the "Sent" marker is dropped.
+function tidy(){const now=Date.now(),got=+store.get("band.checked",0)||0;
   for(const id in intents){const m=D.members.find(x=>x.id===id);
     for(const s in intents[id]){const i=D.sessions.indexOf(s),it=intents[id][s],c=m&&i>=0?m.cells[i]:null;
-      if(!m||i<0||isPast(s)||now-(it.at||0)>2*86400000||(it.want==="away"&&(c==="x"||c==="p"))||(it.want==="in"&&(c===""||c==="r")&&it.base!==c))delete intents[id][s]}
+      if(!m||i<0||isPast(s)||now-(it.at||0)>2*86400000||(got&&got-(it.at||0)>120000)||(it.want==="away"&&(c==="x"||c==="p"))||(it.want==="in"&&(c===""||c==="r")&&it.base!==c))delete intents[id][s]}
     if(!Object.keys(intents[id]).length)delete intents[id]}
-  store.set("band2.intents",intents)})();
+  store.set("band2.intents",intents)}
+tidy();
 
 function queued(mid,s){return queue&&queue.mid===mid?queue.items.find(x=>x.date===s):null}
 // what this member wants for a session, and how to show it
@@ -518,14 +522,14 @@ setTimeout(flushNoted,1200);loadNotedFor();
 renderAll();
 window.__bandSafe=()=>!queue&&$("sheet").hidden&&$("pick").hidden;
 window.__bandToast=(t,sub)=>showMsg(t,sub);
-window.__bandRerender=function(){setTop();if(!D.members.some(m=>m.id===who)){who="";$("pick").hidden=false}renderAll()};
+window.__bandRerender=function(){setTop();if(!D.members.some(m=>m.id===who)){who="";$("pick").hidden=false}tidy();renderAll()};
 })();
 };</script>
 <script>
 (function(){
 "use strict";
 var API="https://script.google.com/macros/s/AKfycbyicvqPU2m1jZ4yLrbjZCFO2o-fEr2UdV1A44Wgd8dOGOhgwjMjfH__ndfWq8qbjNDX/exec",KK="band.k",KD="band.data";
-window.__bandAppVer="2.2";
+window.__bandAppVer="2.3";
 var st={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},del:function(k){try{localStorage.removeItem(k)}catch(e){}}};
 var $=function(id){return document.getElementById(id)};
 function sha(s){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ("0"+x.toString(16)).slice(-2)}).join("")})}
