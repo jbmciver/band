@@ -36,6 +36,7 @@ label.f{display:flex;flex-direction:column;gap:4px;max-width:360px;font-size:.8r
 .star{color:var(--brass)}
 /* header: in the page flow, below the phone's clock */
 .hdr{background:var(--surface);border-bottom:1px solid var(--line);padding:max(10px,env(safe-area-inset-top,0px)) 16px 10px}
+@media (display-mode:standalone){html{background:var(--surface)}.hdr{padding-top:calc(env(safe-area-inset-top,0px) + 14px)}}
 .hdr-in{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .brand{display:flex;flex-direction:column;min-width:0}
 .brand b{font:700 1.06rem/1.15 var(--f-display)}
@@ -333,11 +334,14 @@ function renderNotes(){const box=$("notes");const N=D.notes||[];if(!N.length){bo
   else box.innerHTML='<details class="oldn"'+(oldOpen?" open":"")+'><summary><span>Notes from the Bandmaster · all read</span><span>Old ('+old.length+')</span></summary><ul class="nl old">'+old.map(n=>item(n,false)).join("")+'</ul></details>';
   const dt=box.querySelector("details.oldn");if(dt)dt.addEventListener("toggle",()=>store.set("band.oldOpen",dt.open))}
 $("notes").addEventListener("click",e=>{const b=e.target.closest("button[data-noted]");if(!b)return;const n=(D.notes||[]).find(x=>x.id===b.dataset.noted);if(!n)return;const seen=store.get("band.noted",{});seen[n.id]=n.v;store.set("band.noted",seen);renderNotes()});
-function updText(){if(!D.updatedAt)return D.updated?"Updated "+D.updated:"";const t=new Date(D.updatedAt);if(isNaN(t))return "Updated "+(D.updated||"");
-  const h=t.getHours(),mi=String(t.getMinutes()).padStart(2,"0");const tm=((h%12)||12)+":"+mi+(h<12?"am":"pm");
-  const today=new Date();const same=t.toDateString()===today.toDateString();return "Updated "+(same?"today":DOW[t.getDay()]+" "+t.getDate()+" "+MON[t.getMonth()])+" "+tm}
+function whenText(t){if(isNaN(t))return "";const h=t.getHours(),mi=String(t.getMinutes()).padStart(2,"0");const tm=((h%12)||12)+":"+mi+(h<12?"am":"pm");
+  const same=t.toDateString()===new Date().toDateString();return (same?"today":DOW[t.getDay()]+" "+t.getDate()+" "+MON[t.getMonth()])+" "+tm}
+function updText(){const st=window.__bandStatus;if(st&&st.checking)return "Checking for updates…";
+  if(st&&st.checked)return (st.offline?"Offline · last checked ":"Updated ")+whenText(new Date(st.checked));
+  if(!D.updatedAt)return D.updated?"Updated "+D.updated:"";const t=new Date(D.updatedAt);return isNaN(t)?"Updated "+(D.updated||""):"Updated "+whenText(t)}
 function renderTop(){$("tbupd").textContent=updText();const r=$("refresh");if(window.__bandRefresh){r.addEventListener("click",e=>{e.preventDefault();window.__bandRefresh()})}else if(onAppsScript){r.href=D.form.quick;r.target="_top"}else r.addEventListener("click",e=>{e.preventDefault();location.reload()})}
 renderTop();renderNotes();renderMine();
+window.__bandRerender=function(){$("tbupd").textContent=updText();renderWho();renderNotes();renderMine()};
 })();
 };</script>
 <script>
@@ -354,28 +358,38 @@ function mk(ok,fail){return{withSuccessHandler:function(f){return mk(f,fail)},wi
   sendFromPage:function(n,d,id){call({api:"send",k:st.get(KK)||"",n:n,d:d,id:id}).then(function(r){
     if(r&&r.ok){ok&&ok({title:r.title,body:r.body})}else{fail&&fail(new Error((r&&r.error)||"failed"))}}).catch(function(e){fail&&fail(e)})}}}
 window.__bandGsr=mk(null,null);
-window.__bandRefresh=function(){location.reload()};
 var booted=false;
 function boot(d){window.__BAND_DATA__=d;$("gate").hidden=true;if(!booted){booted=true;window.__bandBoot();setTimeout(installHint,1500)}}
 function gate(title,msg,form,err,retry){$("gate").hidden=false;$("gTitle").textContent=title;$("gMsg").textContent=msg;$("gForm").hidden=!form;$("gErr").textContent=err||"";$("gRetry").hidden=!retry;if(form)setTimeout(function(){$("gPw").focus()},50)}
 function askPw(err){gate("Band password","Enter the band password once. This phone will remember it.",true,err,false)}
-function start(){
-  var k=st.get(KK)||"";
-  gate("Opening…","Getting the latest band details.",false,"",false);
+// Open straight away with the copy saved on this phone, then check for updates in the background.
+var KT="band.checked";
+function status(o){window.__bandStatus=o;if(booted&&window.__bandRerender){try{$("tbupd").textContent=""}catch(e){}window.__bandRerender()}}
+function apply(d){var D=window.__BAND_DATA__;if(!D){boot(d);return}Object.keys(D).forEach(function(x){delete D[x]});Object.assign(D,d)}
+var busy=false;
+function check(){if(busy)return;busy=true;var k=st.get(KK)||"";var first=!booted;
+  if(first)gate("Opening…","Getting the latest band details. The first time can take up to 30 seconds.",false,"",false);
+  else status({checking:true,checked:+st.get(KT)||0});
   call({api:"data",k:k}).then(function(r){
-    if(r&&r.ok){st.set(KD,JSON.stringify(r.data));boot(r.data);return}
-    if(r&&r.error==="password"){st.del(KK);st.del(KD);askPw(k?"The password has changed. Please enter the new one.":"");return}
+    if(r&&r.ok){var t=Date.now();st.set(KD,JSON.stringify(r.data));st.set(KT,String(t));
+      if(first){window.__bandStatus={checked:t};boot(r.data)}else{apply(r.data);status({checked:t})}return}
+    if(r&&r.error==="password"){st.del(KK);st.del(KD);if(booted){location.reload();return}askPw(k?"The password has changed. Please enter the new one.":"");return}
     throw new Error((r&&r.error)||"unavailable")
   }).catch(function(){
-    var c=st.get(KD);
-    if(c){try{boot(JSON.parse(c));return}catch(e){}}
+    if(booted){status({checked:+st.get(KT)||0,offline:true});return}
     gate("Can't connect","The band page couldn't be reached. Check your connection and try again.",false,"",true)
-  })}
-$("gRetry").addEventListener("click",start);
+  }).then(function(){busy=false})}
+function start(){
+  var c=st.get(KD);
+  if(c&&st.get(KK)!==null){try{window.__bandStatus={checking:true};boot(JSON.parse(c))}catch(e){}}
+  check()}
+window.__bandRefresh=check;
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible"&&booted){var t=+st.get(KT)||0;if(Date.now()-t>60000)check()}});
+$("gRetry").addEventListener("click",check);
 $("gForm").addEventListener("submit",function(ev){ev.preventDefault();var pw=$("gPw").value.trim();if(!pw)return;
   $("gGo").disabled=true;$("gErr").textContent="Checking…";
   sha(pw).then(function(h){return call({api:"data",k:h}).then(function(r){
-    if(r&&r.ok){st.set(KK,h);st.set(KD,JSON.stringify(r.data));$("gPw").value="";boot(r.data);return}
+    if(r&&r.ok){var t=Date.now();st.set(KK,h);st.set(KD,JSON.stringify(r.data));st.set(KT,String(t));$("gPw").value="";window.__bandStatus={checked:t};boot(r.data);return}
     $("gErr").textContent=(r&&r.error==="password")?"That password is not right. Try again.":"Something went wrong. Try again."})})
   .catch(function(){$("gErr").textContent="Couldn't connect. Check your connection and try again."})
   .then(function(){$("gGo").disabled=false})});
