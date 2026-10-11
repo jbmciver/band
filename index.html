@@ -162,6 +162,12 @@ ul.evl{margin:0;padding-left:1.1em;font-size:.88rem;display:grid;gap:3px}
 .gate .pickcard p{margin:0}
 .gate .err{color:var(--bad);font-size:.9rem;min-height:1.3em}
 .gate input[type=password]{width:100%;min-height:48px;font-size:16px}
+.ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:40;transform:translate(-50%,-80px);display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line-strong);box-shadow:0 4px 16px rgba(0,0,0,.25);font:600 .85rem var(--f-body);color:var(--ink);pointer-events:none;opacity:0}
+.ptr i{font-style:normal;display:inline-block;font-size:1.1rem;line-height:1;transition:transform .15s}
+.ptr.ready i{transform:rotate(180deg)}
+.ptr.spin i{animation:ptrspin .8s linear infinite}
+@keyframes ptrspin{to{transform:rotate(360deg)}}
+.ptr.anim{transition:transform .2s ease,opacity .2s ease}
 .inst{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:25;background:var(--surface);border:1px solid var(--line-strong);border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.25);padding:14px;display:grid;gap:10px;max-width:520px;margin:0 auto}
 .inst p{margin:0;font-size:.9rem}
 .inst .row{justify-content:flex-end}
@@ -175,6 +181,7 @@ body.hasbar .inst{display:none}
   <button class="btn" id="gRetry" type="button" hidden>Try again</button>
 </div></div>
 <div id="inst" class="inst" hidden></div>
+<div id="ptr" class="ptr" aria-hidden="true"><i>&#8595;</i><span>Pull to refresh</span></div>
 <script>window.__bandBoot=function(){
 (function(){
 "use strict";
@@ -349,7 +356,7 @@ window.__bandRerender=function(){$("tbupd").textContent=updText();renderWho();re
 (function(){
 "use strict";
 var API="https://script.google.com/macros/s/AKfycbyicvqPU2m1jZ4yLrbjZCFO2o-fEr2UdV1A44Wgd8dOGOhgwjMjfH__ndfWq8qbjNDX/exec",KK="band.k",KD="band.data";
-window.__bandAppVer="1.3";
+window.__bandAppVer="1.4";
 var st={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},del:function(k){try{localStorage.removeItem(k)}catch(e){}}};
 var $=function(id){return document.getElementById(id)};
 function sha(s){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ("0"+x.toString(16)).slice(-2)}).join("")})}
@@ -386,6 +393,19 @@ function start(){
   if(c&&st.get(KK)!==null){try{window.__bandStatus={checking:true};boot(JSON.parse(c))}catch(e){}}
   check()}
 window.__bandRefresh=check;
+// Pull down from the top of the page to refresh, like other phone apps.
+(function(){var el=$("ptr"),y0=null,dy=0,PULL=70;
+  function blocked(){return !booted||!$("gate").hidden||!$("pick").hidden||!$("sheet").hidden||(window.scrollY||document.documentElement.scrollTop)>0}
+  function show(d){var r=Math.min(d,PULL*1.4);el.classList.remove("anim");el.style.opacity=String(Math.min(1,r/PULL));el.style.transform="translate(-50%,"+(r-60)+"px)";
+    var ok=d>=PULL;el.classList.toggle("ready",ok);el.querySelector("span").textContent=ok?"Release to refresh":"Pull to refresh"}
+  function hide(){el.classList.add("anim");el.classList.remove("ready","spin");el.style.opacity="0";el.style.transform="translate(-50%,-80px)"}
+  document.addEventListener("touchstart",function(e){if(e.touches.length!==1||blocked()){y0=null;return}y0=e.touches[0].clientY;dy=0},{passive:true});
+  document.addEventListener("touchmove",function(e){if(y0===null)return;dy=e.touches[0].clientY-y0;if(dy<=0||(window.scrollY||document.documentElement.scrollTop)>0){dy=0;hide();return}show(dy)},{passive:true});
+  document.addEventListener("touchend",function(){if(y0===null)return;y0=null;
+    if(dy>=PULL){el.classList.add("anim","spin");el.classList.remove("ready");el.style.opacity="1";el.style.transform="translate(-50%,10px)";el.querySelector("span").textContent="Checking for updates…";el.querySelector("i").innerHTML="&#8635;";
+      check();var w=setInterval(function(){if(!busy){clearInterval(w);el.querySelector("i").innerHTML="&#8595;";hide()}},300)}
+    else hide();dy=0},{passive:true});
+})();
 document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible"&&booted){var t=+st.get(KT)||0;if(Date.now()-t>60000)check()}});
 $("gRetry").addEventListener("click",check);
 $("gForm").addEventListener("submit",function(ev){ev.preventDefault();var pw=$("gPw").value.trim();if(!pw)return;
