@@ -17,11 +17,11 @@
 <body>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
 <style>
-/* v2 layout: in-flow header, three views (This week, My dates, Messages) switched by a fixed bottom tab bar. Large type for older eyes, rem-based so the Text size setting scales everything. */
-:root{--fs:17px;--bg:#f1f3f7;--surface:#ffffff;--ink:#0f1629;--muted:#36415c;--line:#cfd5e1;--line-strong:#9aa3b8;--navy:#22305a;--on-navy:#ffffff;--brass:#8f620f;--on-brass:#ffffff;--brass-soft:#f4e8cf;--ok:#17673a;--ok-soft:#dcf1e3;--bad:#a8231b;--bad-soft:#fbe1de;--wait:#6e4a00;--wait-soft:#fdefc3;--focus:#1f5fd6;--scrim:rgba(8,12,22,.55);
+/* v2 layout: in-flow header, three views (This week, My dates, Announcements) switched by a fixed bottom tab bar. Large type for older eyes, rem-based so the Text size setting scales everything. */
+:root{--fs:17px;--bg:#f1f3f7;--surface:#ffffff;--ink:#0f1629;--muted:#36415c;--line:#cfd5e1;--line-strong:#9aa3b8;--navy:#22305a;--on-navy:#ffffff;--brass:#8f620f;--on-brass:#ffffff;--brass-soft:#f4e8cf;--ok:#17673a;--ok-soft:#dcf1e3;--bad:#a8231b;--bad-soft:#fbe1de;--wait:#6e4a00;--wait-soft:#fdefc3;--focus:#1f5fd6;--scrim:rgba(8,12,22,.55);--off:#e4e6eb;--off-ink:#3f4757;--off-line:#a9b0bd;
 --f-body:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11151f;--surface:#1b2130;--ink:#f1f3f8;--muted:#c2cadb;--line:#363f55;--line-strong:#59637c;--navy:#aebde9;--on-navy:#11151f;--brass:#e3b45c;--on-brass:#1b1406;--brass-soft:#3a2f18;--ok:#86d8a6;--ok-soft:#173424;--bad:#f39a90;--bad-soft:#3d1d1a;--wait:#f2cf6a;--wait-soft:#3a3014;--focus:#8db4ff;--scrim:rgba(0,0,0,.65);color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#11151f;--surface:#1b2130;--ink:#f1f3f8;--muted:#c2cadb;--line:#363f55;--line-strong:#59637c;--navy:#aebde9;--on-navy:#11151f;--brass:#e3b45c;--on-brass:#1b1406;--brass-soft:#3a2f18;--ok:#86d8a6;--ok-soft:#173424;--bad:#f39a90;--bad-soft:#3d1d1a;--wait:#f2cf6a;--wait-soft:#3a3014;--focus:#8db4ff;--scrim:rgba(0,0,0,.65);color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11151f;--surface:#1b2130;--ink:#f1f3f8;--muted:#c2cadb;--line:#363f55;--line-strong:#59637c;--navy:#aebde9;--on-navy:#11151f;--brass:#e3b45c;--on-brass:#1b1406;--brass-soft:#3a2f18;--ok:#86d8a6;--ok-soft:#173424;--bad:#f39a90;--bad-soft:#3d1d1a;--wait:#f2cf6a;--wait-soft:#3a3014;--focus:#8db4ff;--scrim:rgba(0,0,0,.65);--off:#2a2f3b;--off-ink:#c2cadb;--off-line:#59637c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11151f;--surface:#1b2130;--ink:#f1f3f8;--muted:#c2cadb;--line:#363f55;--line-strong:#59637c;--navy:#aebde9;--on-navy:#11151f;--brass:#e3b45c;--on-brass:#1b1406;--brass-soft:#3a2f18;--ok:#86d8a6;--ok-soft:#173424;--bad:#f39a90;--bad-soft:#3d1d1a;--wait:#f2cf6a;--wait-soft:#3a3014;--focus:#8db4ff;--scrim:rgba(0,0,0,.65);--off:#2a2f3b;--off-ink:#c2cadb;--off-line:#59637c;color-scheme:dark}
 html{font-size:var(--fs);-webkit-text-size-adjust:100%}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -86,6 +86,22 @@ h1.pg{margin:0;font:800 1.6rem/1.15 var(--f-body)}
 .pair .btn{min-height:58px;padding:8px 6px;font-size:1rem}
 .pair .btn.yes[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:var(--surface)}
 .pair .btn.no[aria-pressed="true"]{background:var(--bad);border-color:var(--bad);color:var(--surface)}
+.vis{border-left:4px solid var(--navy);padding:2px 0 2px 10px}.vis ul{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:2px}
+.dc.off{background:var(--off);border:2px dashed var(--off-line)}.dc.off .dd{color:var(--off-ink)}
+.offst{font:800 1.1rem/1.25 var(--f-body);color:var(--off-ink);padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--off-ink) 12%,transparent)}
+.offst small{display:block;font:400 .95rem var(--f-body)}
+.grid7 button.d.off{background:var(--off);color:var(--off-ink);border:2px dashed var(--off-line);text-decoration:line-through}
+.dvlist{display:grid}.dvrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.dvrow:last-child{border-bottom:0}.dvrow b{display:block;font-size:1.05rem}.dvrow small{color:var(--muted);font-size:.95rem}.dvrow small.no{color:var(--bad);font-weight:700}.dvrow .btn{min-height:48px}
+.srch{display:flex;align-items:center;gap:8px;min-height:56px;border:2px solid var(--navy);border-radius:14px;padding:0 6px 0 12px;background:var(--surface)}
+.srch svg{width:22px;height:22px;color:var(--muted)}.srch input{flex:1;min-width:0;border:0;background:none;font:400 1.1rem var(--f-body);color:var(--ink);outline:none;min-height:50px}
+.srch button{appearance:none;width:44px;height:44px;border-radius:10px;border:0;background:var(--bg);color:var(--muted);font-size:1rem;cursor:pointer}
+.dvopts{display:grid;gap:8px;max-height:46vh;overflow-y:auto}
+.dvopt{appearance:none;min-height:54px;border:2px solid var(--line);border-radius:12px;padding:10px 14px;font:700 1.05rem var(--f-body);color:var(--ink);background:var(--surface);display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:left;cursor:pointer}
+.dvopt small{font-weight:400;color:var(--bad);font-size:.9rem}.dvopt.alt{font-weight:400;border-style:dashed}
+.dvopt[aria-pressed="true"]{border-color:var(--navy);background:color-mix(in srgb,var(--navy) 14%,var(--surface))}
+.pinin{font:800 2rem var(--f-body)!important;letter-spacing:.5em;text-align:center}
+.err{color:var(--bad);font-weight:700}
 .who{color:var(--muted)}
 .who b{color:var(--ink)}
 ol.mus{margin:0;padding-left:1.4em;display:grid;gap:8px}
@@ -141,7 +157,10 @@ ol.mus{margin:0;padding-left:1.4em;display:grid;gap:8px}
 .reasons{display:flex;flex-wrap:wrap;gap:8px}
 .reasons button{appearance:none;border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:10px 16px;min-height:50px;font:700 1rem var(--f-body);cursor:pointer}
 .reasons button[aria-pressed="true"]{border-color:var(--navy);background:color-mix(in srgb,var(--navy) 15%,var(--surface))}
-.sheet input[type=text],.sheet input[type=date],.sheet select{width:100%;min-height:54px;font-size:1.05rem;border:2px solid var(--line);border-radius:12px;padding:8px 12px;background:var(--surface)}
+.sheet input[type=text],.sheet input[type=date],.sheet select,.sheet textarea{width:100%;min-height:54px;font-size:1.05rem;border:2px solid var(--line);border-radius:12px;padding:8px 12px;background:var(--surface)}
+.sheet textarea{display:block;font:400 1.05rem/1.4 var(--f-body);color:var(--ink);resize:vertical;min-height:84px}
+.fl .opt{font-weight:400;color:var(--muted)}
+@media (max-width:360px){.tbar button{font-size:12.5px}}
 .fl{display:grid;gap:6px;font-weight:700}
 .two{display:grid;grid-template-columns:1fr;gap:12px}
 .two>*{min-width:0}
@@ -170,6 +189,22 @@ label.f{display:grid;gap:6px;font-weight:700}
 .inst{bottom:calc(96px + env(safe-area-inset-bottom,0px))!important}
 @media (prefers-reduced-motion:no-preference){.sheet .inner{animation:up .18s ease-out}@keyframes up{from{transform:translateY(24px)}}}
 @media (prefers-reduced-motion:reduce){.tcount .drn{animation:none;stroke-dashoffset:47}}
+/* PC: a computer with a mouse and no touch screen gets class "pc" (set in the script). Wide windows get top tabs,
+   two columns and centred dialogs; phones and tablets never get the class, so they are unchanged. */
+@media (min-width:900px){
+.pc body{padding-bottom:0}
+.pc .hdr-in,.pc .updin{max-width:1040px}
+.pc .wrap{max-width:1040px;padding:20px 24px 40px}
+.pc #v-msg{max-width:760px}
+.pc .tbar{position:sticky;top:0;bottom:auto;border-top:0;border-bottom:1px solid var(--line);grid-template-columns:repeat(3,auto);justify-content:center;gap:10px;padding:8px 16px}
+.pc .tbar button{grid-auto-flow:column;align-items:center;gap:10px;min-height:52px;padding:8px 22px;font-size:16px}
+.pc .tbar button svg{width:24px;height:24px}
+.pc #week,.pc #myarea{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+.pc #myarea>.month,.pc #myarea>#moreBtn,.pc #myarea>p{grid-column:1/-1}
+.pc .sheet{align-items:center}
+.pc .sheet .inner{border-radius:22px;max-width:560px;max-height:85vh}
+.pc .toast{bottom:24px}
+}
 </style>
 <header class="hdr"><div class="hdr-in"><div class="brand"><b>Wollongong Salvos</b><span id="tbupd"></span></div><div class="hbtns"><button class="ib" id="sizeBtn" type="button" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div></div></header>
 <div id="updbar" class="updbar" role="status" hidden><div class="updin"><div><b>A new version is ready</b><span>Tap below to get the latest. It takes a moment.</span></div><button type="button" class="btn brass wide" id="updGo">Update now</button></div></div>
@@ -187,7 +222,7 @@ label.f{display:grid;gap:6px;font-weight:700}
   <div id="myarea" style="display:grid;gap:12px"></div>
 </div>
 <div class="wrap" id="v-msg" hidden>
-  <h1 class="pg">Messages</h1>
+  <h1 class="pg">Announcements</h1>
   <div id="msgs" style="display:grid;gap:12px"></div>
 </div>
 </main>
@@ -195,7 +230,7 @@ label.f{display:grid;gap:6px;font-weight:700}
 <nav class="tbar" id="tbar" aria-label="Sections">
   <button type="button" data-tab="week"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>This week</button>
   <button type="button" data-tab="dates"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>My dates</button>
-  <button type="button" data-tab="msg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>Messages<span class="badge" id="mBadge" hidden></span></button>
+  <button type="button" data-tab="msg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h3l6 4V6L7 10z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg>Announcements<span class="badge" id="mBadge" hidden></span></button>
 </nav>
 <div id="toast" class="toast" role="status" hidden></div>
 <div id="pick" class="pick" hidden><div class="pickcard"><h1><small>Wollongong Salvos</small>Who are you?</h1><p class="muted">Choose your name once. This phone will remember it.</p><label class="f">Your name<select id="who"><option value="">Choose your name</option></select></label><button class="btn send" id="pickGo" disabled>Continue</button></div></div>
@@ -215,10 +250,19 @@ label.f{display:grid;gap:6px;font-weight:700}
 .inst p{margin:0;font-size:.9rem}
 .inst .row{justify-content:flex-end}
 body.hasbar .inst{display:none}
+.isteps{margin:0;padding:0;list-style:none;display:grid;gap:10px;counter-reset:s}
+.isteps li{display:flex;gap:10px;align-items:flex-start;line-height:1.35;counter-increment:s}
+.isteps li::before{content:counter(s);flex:none;width:28px;height:28px;border-radius:50%;background:var(--brass-soft);color:var(--brass);font:800 .95rem var(--f-body);display:grid;place-items:center}
+.ik{display:inline-flex;align-items:center;gap:4px;border:2px solid var(--line-strong);border-radius:8px;padding:0 6px;font-weight:700;white-space:nowrap;vertical-align:middle}
+.ik svg{width:18px;height:18px}.ik img{width:20px;height:20px;border-radius:5px}
+.inst .isteps{font-size:.95rem}.inst .row{justify-content:stretch;align-items:stretch;flex-wrap:nowrap}.inst .row .btn{flex:1}
+#gInst{display:grid;gap:14px}#gInst .lnk{justify-self:center}
+.ibar{font-size:.9rem;color:var(--muted);text-align:center}
 </style>
 <div id="gate" class="pick gate"><div class="pickcard">
   <h1><small>Wollongong Salvos</small><span id="gTitle">Opening…</span></h1>
   <p class="small muted" id="gMsg">Getting the latest band details.</p>
+  <div id="gInst" hidden></div>
   <form id="gForm" hidden style="display:grid;gap:12px"><input id="gPw" type="password" autocomplete="current-password" placeholder="Band password" aria-label="Band password"><button class="btn send" id="gGo" type="submit">Open</button></form>
   <div class="err" id="gErr" role="alert"></div>
   <button class="btn" id="gRetry" type="button" hidden>Try again</button>
@@ -230,6 +274,10 @@ body.hasbar .inst{display:none}
 "use strict";
 const D=window.__BAND_DATA__;
 const $=id=>document.getElementById(id);
+// On a computer (mouse, no touch screen) there is no installing or alerts, and wide windows get the PC layout.
+const PC=!/iphone|ipad|ipod|android/i.test(navigator.userAgent)&&!(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)&&!!(window.matchMedia&&matchMedia("(hover:hover) and (pointer:fine)").matches);
+window.__bandPC=PC;
+if(PC){document.documentElement.classList.add("pc");const tb=$("tbar"),hd=document.querySelector(".hdr");if(tb&&hd)hd.after(tb)}
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],MONL=["January","February","March","April","May","June","July","August","September","October","November","December"],DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],DOWL=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const P=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
@@ -237,11 +285,16 @@ const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+Stri
 const kind=s=>P(s).getDay()===0?"sun":"wed";
 const fmt=(s,l)=>{const d=P(s);return (l?DOW[d.getDay()]+" ":"")+d.getDate()+" "+MON[d.getMonth()]};
 const fmtLong=s=>{const d=P(s);return DOWL[d.getDay()]+" "+d.getDate()+" "+MONL[d.getMonth()]};
-const evOn=s=>(D.events||[]).filter(e=>s>=e.date&&s<=e.end);
+// band events from the Hub plus the church calendar's Wednesday and Sunday events (D.cal, added by the Apps Script)
+const evKey=e=>e.date+"|"+String(e.title||"").toLowerCase();
+const evAll=()=>{const own=D.events||[],seen=new Set(own.map(evKey));
+  return own.concat((D.cal||[]).filter(e=>e&&e.date&&e.title&&!seen.has(evKey(e))).map(e=>({date:e.date,end:e.endDate||e.date,title:e.title,time:e.time||""})))};
+const evOn=s=>evAll().filter(e=>s>=e.date&&s<=e.end);
 // a session is over once Sunday worship ends (1pm) or Wednesday practice ends (9pm)
 const isPast=s=>{const d=P(s);d.setHours(kind(s)==="sun"?13:21,0,0,0);return Date.now()>=d.getTime()};
 const store={get(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch(e){return f}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const ICON={
+  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>',
   in:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
   away:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
   sent:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg>',
@@ -305,13 +358,17 @@ function musicHtml(list){if(!list.length)return '<p class="muted">Not set yet</p
   return '<ol class="mus">'+list.map(r=>{let btn="";if(r.l){btn='<button type="button" class="recb" data-rec="'+recs.length+'" aria-label="Listen to '+esc(r.t)+'">'+ICON.play+'Listen</button>';recs.push(r)}
     const tag=r.cat?r.cat:r.po?r.po+" this Sunday":"";
     return '<li><div class="mrow"><div><b>'+esc(r.t)+'</b>'+(tag?' <span class="tag">'+esc(tag)+'</span>':'')+(r.i?'<span class="mi">'+esc(r.i)+'</span>':'')+'</div>'+btn+'</div></li>'}).join("")+'</ol>'}
-function cardHtml(m,i,full){const s=D.sessions[i],k=kind(s),M=D.music||{};
-  let h='<article class="dc"><div class="dh"><span class="dd">'+fmt(s,true)+'</span><span class="dk">'+kindLabel(s)+'</span>'+evHtml(s)+'</div>'+statusHtml(m,i)+pairHtml(m,i);
-  if(full){if(k==="wed"){const w=(M.weds||[]).find(x=>x.d===s),reh=(w&&w.reh)||[],dv=reh.find(r=>r.devo);
+function offOf(s){return (D.off||{})[s]||null}
+function cardHtml(m,i,full){const s=D.sessions[i],k=kind(s),M=D.music||{},off=offOf(s);
+  let h='<article class="dc'+(off?' off':'')+'"><div class="dh"><span class="dd">'+fmt(s,true)+'</span>'+(off?'':'<span class="dk">'+kindLabel(s)+'</span>')+evHtml(s)+'</div>'
+   +(off?'<div class="offst">'+esc(off.l)+(off.n?'<small>'+esc(off.n)+'</small>':'')+'</div>':'')+statusHtml(m,i)+(off?'':pairHtml(m,i));
+  if(full&&!off){if(k==="wed"){const w=(M.weds||[]).find(x=>x.d===s),reh=(w&&w.reh)||[],dv=reh.find(r=>r.devo);
       if(dv)h+='<div class="who"><b>Devotions:</b> '+esc(dv.i||"Not set yet")+'</div>';
       h+='<div class="sec">Music</div>'+musicHtml(reh.filter(r=>!r.devo))}
     else{const w=(M.suns||[]).find(x=>x.d===s);h+='<div class="sec">Band music</div>'+musicHtml((w&&w.list)||[])}}
-  return h+awayHtml(m,i)+'</article>'}
+  return h+awayHtml(m,i)+visHtml(i)+'</article>'}
+function visHtml(i){const v=(D.visitors||{})[D.sessions[i]]||[];
+  return v.length?'<div class="vis"><div class="sec">Visiting players</div><ul>'+v.map(x=>'<li><b>'+esc(x.n)+'</b>'+(x.p?' <span class="muted">'+esc(x.p)+'</span>':'')+'</li>').join("")+'</ul></div>':''}
 
 // ----- views -----
 function renderWeek(){const m=me();recs=[];
@@ -338,16 +395,18 @@ function calHtml(m,up){if(!up.length)return '<p class="muted">No band dates comi
   for(let k=0;k<lead;k++)g+='<span class="d"></span>';
   for(let d=1;d<=days;d++){const s=calM+"-"+String(d).padStart(2,"0"),i=byIso[s];
     if(i==null)g+='<span class="d">'+d+'</span>';
-    else{const e=eff(m,i);g+='<button type="button" class="d '+e.st+(i===calSel?' sel':'')+'" data-day="'+i+'" aria-label="'+esc(fmtLong(s))+', '+esc(ST[e.st][0])+'">'+d+'</button>'}}
+    else{const e=eff(m,i),off=offOf(s);g+='<button type="button" class="d '+e.st+(off?' off':'')+(i===calSel?' sel':'')+'" data-day="'+i+'" aria-label="'+esc(fmtLong(s))+', '+esc(off?off.l:ST[e.st][0])+'">'+d+'</button>'}}
   const pi=months.indexOf(calM);
   return '<div class="cal"><div class="ch"><button type="button" class="ib" data-cm="-1" aria-label="Previous month"'+(pi<=0?' disabled':'')+'>‹</button><b>'+MONL[mo-1]+' '+y+'</b><button type="button" class="ib" data-cm="1" aria-label="Next month"'+(pi>=months.length-1?' disabled':'')+'>›</button></div>'
-   +'<div class="grid7">'+g+'</div><div class="leg"><span><i style="background:var(--ok-soft);border:1px solid var(--ok)"></i>In</span><span><i style="background:var(--bad)"></i>Away</span><span><i style="border:2px dashed var(--wait)"></i>Sent</span></div></div>'
+   +'<div class="grid7">'+g+'</div><div class="leg"><span><i style="background:var(--ok-soft);border:1px solid var(--ok)"></i>In</span><span><i style="background:var(--bad)"></i>Away</span><span><i style="border:2px dashed var(--wait)"></i>Sent</span>'+(inM.some(i=>offOf(D.sessions[i]))?'<span><i style="background:var(--off);border:2px dashed var(--off-line)"></i>No band</span>':'')+'</div></div>'
    +(calSel!=null?cardHtml(m,calSel,false):'')}
-function noteHtml(n,btn){return '<div class="msg'+(btn?'':' read')+'"><span class="from">'+(btn?'From the Bandmaster':'Read')+(n.date?' · '+esc(fmt(n.date,true)):'')+'</span><div class="nt">'+linky(n.text)+'</div>'+(btn?'<button type="button" class="btn brass" data-noted="'+esc(n.id)+'">Noted</button>':'')+'</div>'}
+function noteHtml(n,btn){return '<div class="msg'+(btn?'':' read')+'"><span class="from">'+(n.to?'Just for you':btn?'From the Bandmaster':'Read')+(n.date?' · '+esc(fmt(n.date,true)):'')+'</span><div class="nt">'+linky(n.text)+'</div>'+(btn?'<button type="button" class="btn brass" data-noted="'+esc(n.id)+'">Noted</button>':'')+'</div>'}
 function linky(t){return String(t||"").split(" ").map(w=>/^https?:/.test(w)?'<a href="'+esc(w)+'" target="_blank" rel="noopener">'+esc(w)+'</a>':esc(w)).join(" ")}
 // Noted taps are kept on this phone AND sent to the Bandmaster's record, so a note read on one device is read on all of them.
 function serverNoted(){const m=me();if(!m)return {};const o={},nb=(D.notedBy||{})[m.id]||{};for(const k in nb)o[k]=nb[k]&&nb[k].v;return Object.assign(o,window.__notedFor||{})}
-function notesSplit(){const N=D.notes||[],seen=store.get("band.noted",{}),srv=serverNoted();const isNew=n=>seen[n.id]!==n.v&&srv[n.id]!==n.v;return {fresh:N.filter(isNew),old:N.filter(n=>!isNew(n))}}
+// a note with "to" (the devotions reminder) is only for that member
+function myNotes(){const m=me();return (D.notes||[]).filter(n=>!n.to||(m&&m.id===n.to))}
+function notesSplit(){const N=myNotes(),seen=store.get("band.noted",{}),srv=serverNoted();const isNew=n=>seen[n.id]!==n.v&&srv[n.id]!==n.v;return {fresh:N.filter(isNew),old:N.filter(n=>!isNew(n))}}
 function flushNoted(){const g=gsr(),q=store.get("band.notedQ",[]);if(!g||typeof g.notedFromPage!=="function"||!q.length)return;
   q.forEach(x=>{g.withSuccessHandler(r=>{if(r&&r.ok===false)return;const k=store.get("band.notedQ",[]).filter(y=>!(y.m===x.m&&y.id===x.id&&y.v===x.v));store.set("band.notedQ",k)}).withFailureHandler(()=>{}).notedFromPage(x.m,x.id,x.v)})}
 function markNoted(n){const seen=store.get("band.noted",{});seen[n.id]=n.v;store.set("band.noted",seen);const m=me();
@@ -356,8 +415,8 @@ function markNoted(n){const seen=store.get("band.noted",{});seen[n.id]=n.v;store
 function loadNotedFor(){const g=gsr();if(window.__bandGsr||!g||typeof g.notedFor!=="function")return;const m=me();if(!m)return;
   g.withSuccessHandler(o=>{if(o&&typeof o==="object"){window.__notedFor=o;renderNotes()}}).withFailureHandler(()=>{}).notedFor(m.id)}
 function renderNotes(){const {fresh,old}=notesSplit();
-  $("noteTop").innerHTML=fresh.length?noteHtml(fresh[0],true)+(fresh.length>1?'<p class="more">'+(fresh.length-1)+' more in Messages</p>':''):'';
-  $("msgs").innerHTML=(fresh.map(n=>noteHtml(n,true)).join("")+old.map(n=>noteHtml(n,false)).join(""))||'<p class="muted">No messages from the Bandmaster yet.</p>';
+  $("noteTop").innerHTML=fresh.length?noteHtml(fresh[0],true)+(fresh.length>1?'<p class="more">'+(fresh.length-1)+' more in Announcements</p>':''):'';
+  $("msgs").innerHTML=(fresh.map(n=>noteHtml(n,true)).join("")+old.map(n=>noteHtml(n,false)).join(""))||'<p class="muted">No announcements from the Bandmaster yet.</p>';
   const b=$("mBadge");b.hidden=!fresh.length;b.textContent=fresh.length}
 function renderTabs(){for(const v of ["week","dates","msg"])$("v-"+v).hidden=v!==tab;
   for(const b of document.querySelectorAll("#tbar button"))if(b.dataset.tab===tab)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")}
@@ -373,9 +432,9 @@ function cmdFor(m,s,want,reason){const i=D.sessions.indexOf(s),c=m.cells[i];
   return ["","p"].includes(c)?au+" CANCEL":au+" AVAILABLE"}
 let qTimer=null,tickTimer=null,toastMsg=null;
 function saveQ(){store.set("band2.queue",queue)}
-function enqueue(m,items){if(!gsr()){showMsg("Sending isn't available on this page","Open the band app to change your dates.");return}
+function enqueue(m,items,note){if(!gsr()){showMsg("Sending isn't available on this page","Open the band app to change your dates.");return}
   if(queue)flush();
-  queue={mid:m.id,items,at:Date.now()};saveQ();toastMsg=null;
+  queue={mid:m.id,items,note:note||"",at:Date.now()};saveQ();toastMsg=null;
   clearTimeout(qTimer);qTimer=setTimeout(flush,UNDO_MS);
   renderAll()}
 function undo(){if(!queue)return;clearTimeout(qTimer);queue=null;saveQ();renderAll()}
@@ -387,7 +446,7 @@ function flush(){clearTimeout(qTimer);if(!queue)return;const q=queue,m=D.members
   const im=intents[m.id]=intents[m.id]||{};q.items.forEach(x=>{const i=D.sessions.indexOf(x.date);im[x.date]={want:x.want,at:Date.now(),base:m.cells[i]}});
   store.set("band2.intents",intents);queue=null;saveQ();renderAll();
   g.withSuccessHandler(()=>{}).withFailureHandler(()=>{q.items.forEach(x=>{delete (intents[m.id]||{})[x.date]});store.set("band2.intents",intents);
-    queue=Object.assign({},q,{failed:true});saveQ();showMsg("Not sent","Check your internet connection, then tap Try again.",true)}).sendFromPage(m.formName,txt,id)}
+    queue=Object.assign({},q,{failed:true});saveQ();showMsg("Not sent","Check your internet connection, then tap Try again.",true)}).sendFromPage(m.formName,txt,id,q.note||"",m.id)}
 function retry(){if(!queue)return;queue.failed=false;queue.at=Date.now()-UNDO_MS;toastMsg=null;flush()}
 function showMsg(t,sub,canRetry){toastMsg={t,sub,retry:!!canRetry};renderToast();if(!canRetry){clearTimeout(showMsg._t);showMsg._t=setTimeout(()=>{toastMsg=null;renderToast()},4000)}}
 function renderToast(){const el=$("toast");clearInterval(tickTimer);
@@ -408,12 +467,14 @@ function closeSheet(){$("sheet").hidden=true;$("sheetInner").innerHTML="";sheetK
 const REASONS=["Holidays","Work","Unwell","Family","Other"];
 function reasonsHtml(){return '<div class="reasons">'+REASONS.map(r=>'<button type="button" data-reason="'+r+'" aria-pressed="'+(reason===r)+'">'+r+'</button>').join("")+'</div>'+(reason==="Other"?'<input type="text" id="rOther" maxlength="60" placeholder="Type a short reason (optional)">':'')}
 function confirmSheet(i,want){const s=D.sessions[i];pendingSet={i,want};reason="";
-  if(want==="away")openSheet('<h2>Away on '+esc(fmtLong(s))+'?</h2><p class="sub">Add a reason if you like. You can skip this.</p><div id="rbox">'+reasonsHtml()+'</div><button type="button" class="btn brass" data-confirm>Yes, tell the Bandmaster</button><button type="button" class="btn" data-close>No, go back</button>',"confirm");
-  else openSheet('<h2>Can make it on '+esc(fmtLong(s))+'?</h2><p class="sub">We\'ll let the Bandmaster know you\'ll be there.</p><button type="button" class="btn brass" data-confirm>Yes, tell the Bandmaster</button><button type="button" class="btn" data-close>No, go back</button>',"confirm")}
+  if(want==="away")openSheet('<h2>Away on '+esc(fmtLong(s))+'?</h2><p class="sub">Add a reason if you like. You can skip this.</p><div id="rbox">'+reasonsHtml()+'</div>'+noteBox(want)+'<button type="button" class="btn brass" data-confirm>Submit to Bandmaster for noting</button><button type="button" class="btn" data-close>Cancel the change</button>',"confirm");
+  else openSheet('<h2>Can make it on '+esc(fmtLong(s))+'?</h2><p class="sub">We\'ll let the Bandmaster know you\'ll be there.</p>'+noteBox(want)+'<button type="button" class="btn brass" data-confirm>Submit to Bandmaster for noting</button><button type="button" class="btn" data-close>Cancel the change</button>',"confirm")}
+function noteBox(want){return '<label class="fl" for="bNote"><span>Note for the Bandmaster <span class="opt">(optional)</span></span><textarea id="bNote" rows="2" maxlength="300" placeholder="'+(want==="away"?"For example, back for Thursday practice":"For example, I can bring the stands")+'"></textarea></label>'}
+function noteVal(){const n=$("bNote");return n?n.value.replace(/\s+/g," ").trim().slice(0,300):""}
 function reasonVal(){if(reason!=="Other")return reason;const o=$("rOther");return (o&&o.value.trim())||"Other"}
 function rangeSheet(){const m=me();if(!m)return;reason="";
   const t=new Date(),f=iso(t),l=iso(new Date(t.getFullYear(),t.getMonth(),t.getDate()+14));
-  openSheet('<h2>When are you away?</h2><div class="two"><label class="fl">First day away<input type="date" id="rgF" value="'+f+'"></label><label class="fl">Last day away<input type="date" id="rgT" value="'+l+'"></label></div><div id="rgList"></div><div class="sec">Reason (optional)</div><div id="rbox">'+reasonsHtml()+'</div><button type="button" class="btn brass" data-rgo>Yes, tell the Bandmaster</button><button type="button" class="btn" data-close>No, go back</button>',"range");
+  openSheet('<h2>When are you away?</h2><div class="two"><label class="fl">First day away<input type="date" id="rgF" value="'+f+'"></label><label class="fl">Last day away<input type="date" id="rgT" value="'+l+'"></label></div><div id="rgList"></div><div class="sec">Reason (optional)</div><div id="rbox">'+reasonsHtml()+'</div>'+noteBox("away")+'<button type="button" class="btn brass" data-rgo>Submit to Bandmaster for noting</button><button type="button" class="btn" data-close>Cancel the change</button>',"range");
   rangeSel=null;rangeList()}
 function rangeList(){const m=me(),f=$("rgF").value,t=$("rgT").value;const box=$("rgList");if(!box)return;
   const a=f&&t&&t<f?t:f,b=f&&t&&t<f?f:t;
@@ -424,7 +485,7 @@ function rangeList(){const m=me(),f=$("rgF").value,t=$("rgT").value;const box=$(
     if(rangeSel[s]===undefined)rangeSel[s]=!done;
     return '<li><label><input type="checkbox" data-rg="'+s+'"'+(rangeSel[s]?' checked':'')+(done?' disabled':'')+'><span class="tk"><b>'+esc(fmt(s,true))+'</b><small>'+kindLabel(s)+(done?(e.st==="usual"?' · not usually on '+(kind(s)==="sun"?"Sundays":"Wednesdays"):' · already away'):'')+'</small></span></label></li>'}).join("")+'</ul>';
   updRangeBtn(ds.filter(i=>rangeSel[D.sessions[i]]&&eff(m,i).want!=="away").length)}
-function updRangeBtn(n){const b=document.querySelector("[data-rgo]");if(!b)return;b.disabled=!n;b.textContent=n?"Yes, tell the Bandmaster ("+n+" date"+(n>1?"s":"")+")":"No dates picked"}
+function updRangeBtn(n){const b=document.querySelector("[data-rgo]");if(!b)return;b.disabled=!n;b.textContent=n?"Submit to Bandmaster for noting ("+n+" date"+(n>1?"s":"")+")":"No dates picked"}
 function recSheet(r){const url=String(r.l||"").trim();let body="";
   const yt=ytId(url);
   if(yt)body='<div class="vid"><iframe src="https://www.youtube-nocookie.com/embed/'+yt.id+'?rel=0&playsinline=1&autoplay=1'+(yt.start?'&start='+yt.start:'')+'" title="'+esc(r.t)+'" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div><a class="btn wide" href="'+esc(url)+'" target="_blank" rel="noopener">Open in YouTube</a><p class="small muted">If the video won\'t play here, tap Open in YouTube.</p>';
@@ -435,13 +496,71 @@ function ytId(u){let m=u.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|sh
   const t=u.match(/[?&#](?:t|start)=(\d+h)?(\d+m)?(\d+)s?/);let start=0;if(t)start=(parseInt(t[1])||0)*3600+(parseInt(t[2])||0)*60+(parseInt(t[3])||0);
   return {id:m[1],start}}
 const onAppsScript=/googleusercontent\.com$/.test(location.hostname)&&D.form&&D.form.quick;
-const PREFS=[["notes","Messages from the Bandmaster",""],["music","Music for practice and Sunday","When the Bandmaster updates it"],["noted","When the Bandmaster notes my dates",""]];
+const PREFS=[["notes","Announcements from the Bandmaster",""],["music","Music for practice and Sunday","When the Bandmaster updates it"],["noted","When the Bandmaster notes my dates",""]];
+// ----- role functions (installed app only: they need the Apps Script API) -----
+// The Devotions Coordinator edits the devotions roster. A 4-digit PIN from the Bandmaster, asked once and kept on this phone.
+const myRoles=()=>{const m=me();return (m&&m.roles)||[]};
+function rolesHtml(){if(!window.__bandApi||!myRoles().includes("devotionsCoordinator"))return "";
+  return '<div class="sec">Devotions Coordinator</div><button type="button" class="btn navy wide" id="dvOpen">Devotions roster</button>'}
+const dvPin=()=>store.get("band.rolePin","");
+function dvWeds(){return upcoming().filter(i=>kind(D.sessions[i])==="wed").slice(0,12)}
+function dvNow(w){return (D.devo||{})[w]||null}
+function dvPinSheet(err){openSheet('<h2>Enter your coordinator PIN</h2><p class="sub">The 4 numbers the Bandmaster gave you. This phone remembers it, so you only do this once.</p>'
+  +'<input type="text" id="dvPinIn" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" class="pinin" aria-label="PIN">'
+  +(err?'<p class="err" role="alert">'+esc(err)+'</p>':'')+'<button type="button" class="btn navy" id="dvPinGo">Continue</button><button type="button" class="btn" data-close>Not now</button>',"dvpin");
+  setTimeout(()=>{const i=$("dvPinIn");i&&i.focus()},50)}
+function dvErr(r){return r&&r.error==="locked"?"Too many tries. Wait "+(r.wait||15)+" minutes, then try again.":r&&r.error==="nopin"?"The Bandmaster hasn't set your PIN yet.":r&&r.error==="role"?"This phone isn't set up as the Devotions Coordinator.":"That PIN isn't right. Check with the Bandmaster."}
+function dvRoster(){const W=dvWeds();
+  openSheet('<h2>Devotions roster</h2><div class="dvlist">'+W.map(i=>{const w=D.sessions[i],c=dvNow(w);
+    return '<div class="dvrow"><div><b>'+esc(fmt(w,true))+'</b><small'+(c&&c.p?'':' class="no"')+'>'+esc(c&&c.p?c.p:"No one yet")+'</small></div><button type="button" class="btn" data-dvw="'+w+'">Change</button></div>'}).join("")
+   +'</div><p class="sub">Shows the next '+W.length+' Wednesdays.</p><button type="button" class="btn navy" data-close>Done</button>',"dvroster")}
+let dvSel=null;
+function dvChoose(w){const i=D.sessions.indexOf(w),cur=dvNow(w);dvSel=cur&&cur.p?{p:cur.p,m:cur.m||""}:null;
+  const ms=D.members.slice().sort((a,b)=>a.name.localeCompare(b.name));
+  openSheet('<h2>Who is doing devotions on '+esc(fmt(w,true))+'?</h2>'
+   +'<label class="srch"><span aria-hidden="true">'+ICON.search+'</span><input type="search" id="dvQ" placeholder="Search for a name" autocomplete="off" aria-label="Search for a name"><button type="button" id="dvQx" aria-label="Clear">✕</button></label>'
+   +'<div class="dvopts">'+ms.map(m=>{const away=i>=0&&["x","p","s"].includes(m.cells[i]);return '<button type="button" class="dvopt" data-dvm="'+esc(m.id)+'" data-n="'+esc(m.name.toLowerCase())+'" aria-pressed="'+(!!dvSel&&dvSel.m===m.id)+'">'+esc(m.name)+(away?'<small>away that day</small>':'')+'</button>'}).join("")
+   +'<button type="button" class="dvopt alt" data-dvm="__other" aria-pressed="'+(!!dvSel&&!dvSel.m)+'">Someone else (type a name)</button>'
+   +'<input type="text" id="dvOther" maxlength="60" placeholder="Their name" value="'+esc(dvSel&&!dvSel.m?dvSel.p:"")+'"'+(dvSel&&!dvSel.m?'':' hidden')+'>'
+   +'<button type="button" class="dvopt alt" data-dvm="__none" aria-pressed="false">No one yet</button></div>'
+   +'<button type="button" class="btn brass" id="dvGo" data-w="'+w+'" disabled>Choose a name</button><button type="button" class="btn" id="dvBack">No, go back</button>',"dvchoose")}
+function dvGoLabel(w){const b=$("dvGo");if(!b)return;const o=$("dvOther");
+  const nm=dvSel?(dvSel.none?"":dvSel.m?dvSel.p:(o?o.value.trim():"")):null;
+  b.disabled=nm===null||(dvSel&&!dvSel.m&&!dvSel.none&&!nm);
+  b.textContent=nm===null?"Choose a name":dvSel.none?"Yes, no one yet on "+fmt(w,true):nm?"Yes, "+nm+" on "+fmt(w,true):"Type their name"}
+async function dvSave(w){const o=$("dvOther"),person=dvSel.none?"":dvSel.m?dvSel.p:o.value.trim(),pm=dvSel.none?"":dvSel.m||"";
+  const b=$("dvGo");b.disabled=true;b.textContent="Saving…";
+  try{const r=await window.__bandApi({api:"devo",m:me().id,pin:dvPin(),w:w,person:person,pm:pm});
+    if(r&&r.ok){D.devo=D.devo||{};if(r.person)D.devo[w]={p:r.person,m:pm};else delete D.devo[w];dvRoster();showMsg("Saved",(r.person?r.person+" is on for ":"No one yet for ")+fmt(w,true)+". The Bandmaster has been told.");return}
+    if(r&&(r.error==="pin"||r.error==="nopin"||r.error==="role")){store.set("band.rolePin","");dvPinSheet(dvErr(r));return}
+    showMsg("Not saved",dvErr(r));dvGoLabel(w)}
+  catch(e){showMsg("Not saved","Check your internet connection, then try again.");dvGoLabel(w)}}
+$("sheet").addEventListener("click",async e=>{const t=e.target;
+  if(t.closest("#dvOpen")){if(dvPin())dvRoster();else dvPinSheet("");return}
+  if(t.closest("#dvPinGo")){const v=($("dvPinIn").value||"").trim();if(!/^\d{4}$/.test(v)){dvPinSheet("Type the 4 numbers.");return}
+    const b=$("dvPinGo");b.disabled=true;b.textContent="Checking…";
+    try{const r=await window.__bandApi({api:"pin",m:me().id,pin:v});if(r&&r.ok){store.set("band.rolePin",v);dvRoster()}else dvPinSheet(dvErr(r))}
+    catch(x){dvPinSheet("Couldn't check the PIN. Check your internet connection.")}return}
+  const cw=t.closest("[data-dvw]");if(cw){dvChoose(cw.dataset.dvw);return}
+  if(t.closest("#dvBack")){dvRoster();return}
+  if(t.closest("#dvQx")){$("dvQ").value="";dvFilter();$("dvQ").focus();return}
+  const op=t.closest("[data-dvm]");if(op){const v=op.dataset.dvm,w=$("dvGo").dataset.w;
+    document.querySelectorAll("[data-dvm]").forEach(b=>b.setAttribute("aria-pressed",String(b===op)));
+    const o=$("dvOther");o.hidden=v!=="__other";
+    if(v==="__none")dvSel={none:true};else if(v==="__other"){dvSel={p:o.value.trim(),m:""};o.focus()}else{const m=D.members.find(x=>x.id===v);dvSel={p:m.name,m:m.id}}
+    dvGoLabel(w);return}
+  if(t.closest("#dvGo")){dvSave(t.closest("#dvGo").dataset.w);return}});
+function dvFilter(){const q=($("dvQ")||{}).value||"";const n=q.trim().toLowerCase();
+  document.querySelectorAll(".dvopt[data-n]").forEach(b=>{b.hidden=!!n&&!b.dataset.n.includes(n)})}
+$("sheet").addEventListener("input",e=>{if(e.target.id==="dvQ")dvFilter();if(e.target.id==="dvOther"){const g=$("dvGo");if(g)dvGoLabel(g.dataset.w)}});
 function sizeSheet(){const m=me();const nm=m?(m.short||m.name.split(" ")[0]):"";
   openSheet('<h2>Settings</h2>'
    +(m?'<div class="sec">Your name</div><div class="setrow"><b>'+esc(m.name)+'</b>'+(onAppsScript?'<a class="lnk" href="'+esc(D.form.quick)+'" target="_top" id="signOut">Not '+esc(nm)+'? Switch</a>':'<button type="button" class="lnk" id="signOut">Not '+esc(nm)+'? Switch</button>')+'</div>':'')
+   +rolesHtml()
    +'<div class="sec">Text size</div><div class="sizes">'+[[17,"Normal"],[20,"Large"],[23,"Larger"]].map(z=>'<button type="button" data-fs="'+z[0]+'" aria-pressed="'+(fs===z[0])+'"><span style="font-size:'+z[0]+'px">Aa</span><small>'+z[1]+'</small></button>').join("")+'</div>'
-   +'<div class="sec">Latest details</div><div class="setrow"><span class="small">'+esc(updText().replace(/^v[\d.]+ · /,""))+'</span><button type="button" class="btn" id="refreshNow">Refresh now</button></div><p class="small muted">The app also checks by itself every few minutes. You can pull down from the top of the page to check too.</p>'
-   +(window.__bandPush?'<div class="sec">Alerts on this phone</div><div id="alertsBox"><p class="muted">Checking…</p></div>':'')
+   +'<div class="sec">Latest details</div><div class="setrow"><span class="small">'+esc(updText().replace(/^v[\d.]+ · /,""))+'</span><button type="button" class="btn" id="refreshNow">Refresh now</button></div><p class="small muted">The app also checks by itself every few minutes.'+(PC?'':' You can pull down from the top of the page to check too.')+'</p>'
+   +(window.__bandInstall&&window.__bandInstall.need()?'<div class="sec">Use as an app</div><div class="setrow"><span class="small">Put the band app on your Home Screen so it opens like an app and can send alerts.</span><button type="button" class="btn brass" id="instHow">Show me how</button></div>':'')
+   +(window.__bandPush&&!PC?'<div class="sec">Alerts on this phone</div><div id="alertsBox"><p class="muted">Checking…</p></div>':'')
    +'<p class="small muted">'+(window.__bandAppVer?'App version '+esc(window.__bandAppVer):'Band page')+'</p><button type="button" class="btn navy" data-close>Done</button>',"size");
   renderAlerts()}
 let alertBusy=false;
@@ -478,11 +597,12 @@ document.addEventListener("click",e=>{
 $("sheet").addEventListener("click",e=>{const t=e.target;
   if(t===$("sheet")||t.closest("[data-close]")){closeSheet();return}
   const r=t.closest("button[data-reason]");if(r){const keep=$("rOther")?$("rOther").value:"";reason=reason===r.dataset.reason?"":r.dataset.reason;$("rbox").innerHTML=reasonsHtml();if($("rOther")){$("rOther").value=keep;$("rOther").focus()}return}
-  if(t.closest("[data-confirm]")&&pendingSet){const m=me(),s=D.sessions[pendingSet.i];const it={date:s,want:pendingSet.want,reason:pendingSet.want==="away"?reasonVal():""};closeSheet();pendingSet=null;enqueue(m,[it]);return}
-  if(t.closest("[data-rgo]")){const m=me(),rs=reasonVal();const items=upcoming().map(i=>D.sessions[i]).filter(s=>rangeSel&&rangeSel[s]&&eff(m,D.sessions.indexOf(s)).want!=="away").map(s=>({date:s,want:"away",reason:rs}));if(!items.length)return;closeSheet();enqueue(m,items);return}
+  if(t.closest("[data-confirm]")&&pendingSet){const m=me(),s=D.sessions[pendingSet.i];const it={date:s,want:pendingSet.want,reason:pendingSet.want==="away"?reasonVal():""},nt=noteVal();closeSheet();pendingSet=null;enqueue(m,[it],nt);return}
+  if(t.closest("[data-rgo]")){const m=me(),rs=reasonVal();const items=upcoming().map(i=>D.sessions[i]).filter(s=>rangeSel&&rangeSel[s]&&eff(m,D.sessions.indexOf(s)).want!=="away").map(s=>({date:s,want:"away",reason:rs}));if(!items.length)return;const nt=noteVal();closeSheet();enqueue(m,items,nt);return}
   const f=t.closest("button[data-fs]");if(f){fs=+f.dataset.fs;store.set("band2.fs",fs);document.documentElement.style.setProperty("--fs",fs+"px");for(const b of document.querySelectorAll("[data-fs]"))b.setAttribute("aria-pressed",String(+b.dataset.fs===fs));return}
   const al=t.closest("button[data-alerts]");if(al&&window.__bandPush){if(al.dataset.alerts==="on")alertsDo(()=>window.__bandPush.enable({notes:true,music:true,noted:true}),"Alerts are on. We've sent you a test alert.");else alertsDo(()=>window.__bandPush.disable(),"Alerts are off.");return}
   if(t.closest("#refreshNow")){refreshNow();return}
+  if(t.closest("#instHow")&&window.__bandInstall){closeSheet();window.__bandInstall.show();return}
   const so=t.closest("#signOut");if(so){store.set("band.who","");if(window.__bandPush)window.__bandPush.disable().catch(()=>{});try{localStorage.removeItem("band.pagepw")}catch(x){}
     if(!onAppsScript){e.preventDefault();who="";$("who").value="";$("pickGo").disabled=true;closeSheet();$("pick").hidden=false;renderAll()}}
 });
@@ -497,7 +617,7 @@ const sel=$("who");
 sel.innerHTML+=D.members.filter(m=>m.player).slice().sort((a,b)=>a.formName.localeCompare(b.formName)).map(m=>'<option value="'+esc(m.id)+'">'+esc(m.formName||m.name)+'</option>').join("");
 sel.addEventListener("change",()=>{$("pickGo").disabled=!sel.value});
 $("pickGo").addEventListener("click",()=>{if(!sel.value)return;who=sel.value;store.set("band.who",who);store.set("band.whoSince",D.pwSince||"");$("pick").hidden=true;
-  const seen=store.get("band.noted",{}),m=me();if(m)(D.notes||[]).forEach(n=>{if(seen[n.id]===n.v)markNoted(n)});   // notes read before picking a name
+  const seen=store.get("band.noted",{}),m=me();if(m)myNotes().forEach(n=>{if(seen[n.id]===n.v)markNoted(n)});   // notes read before picking a name
   loadNotedFor();renderAll();window.scrollTo(0,0);if(window.__bandPush)window.__bandPush.resync()});
 if(!who)$("pick").hidden=false;
 
@@ -529,7 +649,7 @@ window.__bandRerender=function(){setTop();if(!D.members.some(m=>m.id===who)){who
 (function(){
 "use strict";
 var API="https://script.google.com/macros/s/AKfycbyicvqPU2m1jZ4yLrbjZCFO2o-fEr2UdV1A44Wgd8dOGOhgwjMjfH__ndfWq8qbjNDX/exec",KK="band.k",KD="band.data";
-window.__bandAppVer="2.3";
+window.__bandAppVer="3.3";
 var st={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},del:function(k){try{localStorage.removeItem(k)}catch(e){}}};
 var $=function(id){return document.getElementById(id)};
 function sha(s){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ("0"+x.toString(16)).slice(-2)}).join("")})}
@@ -537,15 +657,24 @@ function call(p){var q=Object.keys(p).map(function(k){return encodeURIComponent(
   return fetch(API+"?"+q,{redirect:"follow",cache:"no-store",keepalive:p.api==="send"||p.api==="noted"}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()})}
 // sending from the page goes through the same API, shaped like google.script.run
 function mk(ok,fail){return{withSuccessHandler:function(f){return mk(f,fail)},withFailureHandler:function(f){return mk(ok,f)},
-  sendFromPage:function(n,d,id){call({api:"send",k:st.get(KK)||"",n:n,d:d,id:id}).then(function(r){
+  sendFromPage:function(n,d,id,note,mid){call({api:"send",k:st.get(KK)||"",n:n,d:d,id:id,note:note||"",m:mid||""}).then(function(r){
     if(r&&r.ok){ok&&ok({title:r.title,body:r.body});setTimeout(check,1500)}else{fail&&fail(new Error((r&&r.error)||"failed"))}}).catch(function(e){fail&&fail(e)})},
   notedFromPage:function(m,nid,v){call({api:"noted",k:st.get(KK)||"",m:m,nid:nid,v:v}).then(function(r){
     if(r&&r.ok){ok&&ok(r)}else{fail&&fail(new Error((r&&r.error)||"failed"))}}).catch(function(e){fail&&fail(e)})}}}
 window.__bandGsr=mk(null,null);
+// role functions (Devotions Coordinator) call the API directly
+window.__bandApi=function(p){p.k=st.get(KK)||"";return call(p)};
 var booted=false;
 function boot(d){window.__BAND_DATA__=d;$("gate").hidden=true;if(!booted){booted=true;window.__bandBoot();setTimeout(installHint,1500);updatedToast();setTimeout(function(){verCheck(true)},2500);setTimeout(function(){if(window.__bandPush)window.__bandPush.resync()},4000)}}
-function gate(title,msg,form,err,retry){$("gate").hidden=false;$("gTitle").textContent=title;$("gMsg").textContent=msg;$("gForm").hidden=!form;$("gErr").textContent=err||"";$("gRetry").hidden=!retry;if(form)setTimeout(function(){$("gPw").focus()},50)}
-function askPw(err){gate("Band password","Enter the band password once. This phone will remember it.",true,err,false)}
+function gate(title,msg,form,err,retry){$("gate").hidden=false;$("gInst").hidden=true;$("gTitle").textContent=title;$("gMsg").textContent=msg;$("gForm").hidden=!form;$("gErr").textContent=err||"";$("gRetry").hidden=!retry;if(form)setTimeout(function(){$("gPw").focus()},50)}
+// On an iPhone in Safari, show how to add the app to the Home Screen BEFORE the password: the Home Screen app keeps
+// its own storage, so a password entered in Safari would have to be entered again there.
+var instSkip=false;
+function askPw(err){if(!err&&!instSkip&&iosBrowser()){instGate();return}
+  gate("Band password",standalone?"You're in the band app. Enter the band password once and it will be remembered here.":"Enter the band password once. This phone will remember it.",true,err,false)}
+function instGate(){gate("First, put the band app on your Home Screen","Do this before you enter the band password. Then you only sign in once, and the app remembers you.",false,"",false);
+  var b=$("gInst");b.innerHTML=instSteps(true)+'<p class="ibar">Safari\'s buttons are in the bar at the bottom of the screen &#8595;</p><button type="button" class="lnk" id="iSkip">Skip this and sign in here instead</button>';b.hidden=false;
+  $("iSkip").addEventListener("click",function(){instSkip=true;askPw("")})}
 // Open straight away with the copy saved on this phone, then check for updates in the background.
 var KT="band.checked";
 function status(o){window.__bandStatus=o;if(booted&&window.__bandRerender){try{$("tbupd").textContent=""}catch(e){}window.__bandRerender()}}
@@ -554,7 +683,7 @@ var busy=false;
 function check(){if(busy)return;busy=true;var k=st.get(KK)||"";var first=!booted;
   if(first)gate("Opening…","Getting the latest band details. The first time can take up to 30 seconds.",false,"",false);
   else status({checking:true,checked:+st.get(KT)||0});
-  call({api:"data",k:k}).then(function(r){
+  call({api:"data",k:k,m:whoNow()}).then(function(r){
     if(r&&r.ok){var t=Date.now();st.set(KD,JSON.stringify(r.data));st.set(KT,String(t));
       if(first){window.__bandStatus={checked:t};boot(r.data)}else{apply(r.data);status({checked:t})}return}
     if(r&&r.error==="password"){st.del(KK);st.del(KD);if(booted){location.reload();return}askPw(k?"The password has changed. Please enter the new one.":"");return}
@@ -639,17 +768,28 @@ $("gForm").addEventListener("submit",function(ev){ev.preventDefault();var pw=$("
     $("gErr").textContent=(r&&r.error==="password")?"That password is not right. Try again.":"Something went wrong. Try again."})})
   .catch(function(){$("gErr").textContent="Couldn't connect. Check your connection and try again."})
   .then(function(){$("gGo").disabled=false})});
-// one-off tip on how to add the app to the home screen
+// tip on how to add the app to the home screen (also shown from Settings > Use as an app)
 var standalone=(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true;
 var deferred=null;window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferred=e});
-function installHint(){if(standalone||st.get("band.instDone"))return;
-  var ios=/iphone|ipad|ipod/i.test(navigator.userAgent);var box=$("inst");
+function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)}
+function iosBrowser(){return !standalone&&isIOS()}
+var IC_SHARE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4M5 12v8h14v-8"/></svg>';
+var IC_MORE='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>';
+function instSteps(first){return '<ol class="isteps"><li><span>Tap the Share button <span class="ik">'+IC_SHARE+'Share</span> in Safari. If you can\'t see it, tap <span class="ik" aria-label="More">'+IC_MORE+'</span> first.</span></li>'
+  +'<li><span>Scroll down and tap <span class="ik">Add to Home Screen</span></span></li>'
+  +'<li><span>Tap <span class="ik">Add</span>'+(first?', then close Safari':'')+'</span></li>'
+  +'<li><span>Open <span class="ik"><img src="icon-180.png" alt="">Salvo Band</span> on your Home Screen'+(first?' and enter the band password there':'')+'</span></li></ol>'}
+function installHint(force){if(standalone||window.__bandPC)return;if(!force&&st.get("band.instDone"))return;
+  var later=+st.get("band.instLater")||0;if(!force&&Date.now()-later<3*86400000)return;
+  var box=$("inst");
   if(deferred)box.innerHTML='<p><b>Install the band app</b><br>Adds the band page to your home screen.</p><div class="row"><button class="btn" id="iNo">Not now</button><button class="btn send" id="iGo">Install</button></div>';
-  else if(ios)box.innerHTML='<p><b>Add to your Home Screen</b><br>In Safari, tap the Share button, then "Add to Home Screen".</p><div class="row"><button class="btn" id="iNo">Got it</button></div>';
+  else if(isIOS())box.innerHTML='<p><b>Put the band app on your Home Screen</b><br>It opens like a normal app and can send you alerts. You\'ll enter the band password once more in the new app.</p>'+instSteps(false)+'<div class="row"><button class="btn" id="iLater">Remind me later</button><button class="btn navy" id="iNo">I\'ve done it</button></div>';
   else return;
   box.hidden=false;
   $("iNo").addEventListener("click",function(){st.set("band.instDone","1");box.hidden=true});
+  var l=$("iLater");if(l)l.addEventListener("click",function(){st.set("band.instLater",String(Date.now()));box.hidden=true});
   var g=$("iGo");if(g)g.addEventListener("click",function(){deferred.prompt();deferred.userChoice.then(function(){st.set("band.instDone","1");box.hidden=true})})}
+window.__bandInstall={need:function(){return !standalone&&!window.__bandPC&&(isIOS()||!!deferred)},show:function(){installHint(true)}};
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(function(){});
 start();
 })();
