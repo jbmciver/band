@@ -304,6 +304,10 @@ const ICON={
 
 // ----- per-phone state -----
 let who=store.get("band.who","");
+// Announcements start from the first time the app is opened on this phone (a new install, or put back on the Home Screen
+// after being deleted): notes the Bandmaster posted before then aren't shown. Phones that already had the app keep them all.
+if(store.get("band.notesFrom",null)===null)store.set("band.notesFrom",who||Object.keys(store.get("band.noted",{})).length?"":new Date(Date.now()-600000).toISOString());   // 10 minutes of grace for a phone clock that runs fast
+const notesFrom=store.get("band.notesFrom","");
 if(!D.members.some(m=>m.id===who))who="";
 let intents=store.get("band2.intents",{});   // {memberId:{date:{want:"in"|"away",at}}} sent, not yet shown on the roster
 let queue=store.get("band2.queue",null);     // {mid,items:[{date,want,reason}],at} waiting out the Undo time
@@ -405,7 +409,8 @@ function linky(t){return String(t||"").split(" ").map(w=>/^https?:/.test(w)?'<a 
 // Noted taps are kept on this phone AND sent to the Bandmaster's record, so a note read on one device is read on all of them.
 function serverNoted(){const m=me();if(!m)return {};const o={},nb=(D.notedBy||{})[m.id]||{};for(const k in nb)o[k]=nb[k]&&nb[k].v;return Object.assign(o,window.__notedFor||{})}
 // a note with "to" (the devotions reminder) is only for that member
-function myNotes(){const m=me();return (D.notes||[]).filter(n=>!n.to||(m&&m.id===n.to))}
+// the day's automatic reminders (No Band, devotions) always show; the Bandmaster's notes only from notesFrom on
+function myNotes(){const m=me();return (D.notes||[]).filter(n=>(!n.to||(m&&m.id===n.to))&&(!notesFrom||n.to||/^(off|devo)-/.test(n.id)||String(n.v||"")>=notesFrom))}
 function notesSplit(){const N=myNotes(),seen=store.get("band.noted",{}),srv=serverNoted();const isNew=n=>seen[n.id]!==n.v&&srv[n.id]!==n.v;return {fresh:N.filter(isNew),old:N.filter(n=>!isNew(n))}}
 function flushNoted(){const g=gsr(),q=store.get("band.notedQ",[]);if(!g||typeof g.notedFromPage!=="function"||!q.length)return;
   q.forEach(x=>{g.withSuccessHandler(r=>{if(r&&r.ok===false)return;const k=store.get("band.notedQ",[]).filter(y=>!(y.m===x.m&&y.id===x.id&&y.v===x.v));store.set("band.notedQ",k)}).withFailureHandler(()=>{}).notedFromPage(x.m,x.id,x.v)})}
@@ -649,7 +654,7 @@ window.__bandRerender=function(){setTop();if(!D.members.some(m=>m.id===who)){who
 (function(){
 "use strict";
 var API="https://script.google.com/macros/s/AKfycbyicvqPU2m1jZ4yLrbjZCFO2o-fEr2UdV1A44Wgd8dOGOhgwjMjfH__ndfWq8qbjNDX/exec",KK="band.k",KD="band.data";
-window.__bandAppVer="3.3";
+window.__bandAppVer="3.4";
 var st={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},del:function(k){try{localStorage.removeItem(k)}catch(e){}}};
 var $=function(id){return document.getElementById(id)};
 function sha(s){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ("0"+x.toString(16)).slice(-2)}).join("")})}
