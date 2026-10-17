@@ -452,7 +452,7 @@ function calHtml(m,up){if(!up.length)return '<p class="muted">No band dates comi
   return '<div class="cal"><div class="ch"><button type="button" class="ib" data-cm="-1" aria-label="Previous month"'+(pi<=0?' disabled':'')+'>‹</button><b>'+MONL[mo-1]+' '+y+'</b><button type="button" class="ib" data-cm="1" aria-label="Next month"'+(pi>=months.length-1?' disabled':'')+'>›</button></div>'
    +'<div class="grid7">'+g+'</div><div class="leg"><span><i style="background:var(--ok-soft);border:1px solid var(--ok)"></i>In</span><span><i style="background:var(--bad)"></i>Away</span><span><i style="border:2px dashed var(--wait)"></i>Sent</span>'+(inM.some(i=>offOf(D.sessions[i]))?'<span><i style="background:var(--off);border:2px dashed var(--off-line)"></i>No band</span>':'')+'</div></div>'
    +(calSel!=null?cardHtml(m,calSel,false):'')}
-// A note can ask for Noted (ack), offer answers to tap (rs.k "one" or "many") or take a written reply (rs.k "text").
+// Every note asks for Noted (ack only adds one reminder), and can offer answers to tap (rs.k "one" or "many") or take a written reply (rs.k "text").
 // Sending a reply also counts as Noted. A member only ever sees their own reply (D.myReplies, or the one just sent).
 const rsel={};   // replies being chosen or typed, by note id, kept while the app is open so a refresh doesn't lose them
 function myReply(n){const r=(D.myReplies||{})[n.id],l=store.get("band.replies",{})[n.id];return l&&(!r||String(l.at)>String(r.at))?l:(r||null)}
@@ -467,7 +467,7 @@ function noteHtml(n,btn){const r=n.rs?myReply(n):null;
   let h='<div class="msg'+(btn?'':' read')+'"><span class="from">'+(n.devo?'Just for you · Devotions':n.to?'Just for you':btn?'From the Bandmaster':'Read')+(n.date?' · '+esc(fmt(n.date,true)):'')+'</span><div class="nt">'+linky(n.text)+'</div>';
   if(r)h+='<div class="mine"><b>Your reply</b> · '+esc(whenText(new Date(r.at)))+'<div>'+esc(replyText(n,r))+'</div><small>Sent for Bandmaster</small></div>';
   if(btn){if(n.rs&&!n.cl&&!r)h+=replyForm(n);
-    else h+=(n.ack&&!n.cl?'<div class="ask">'+(n.devo?'Please tap Noted so the Devotions Coordinator knows you\'ve seen it.':'The Bandmaster has asked you to tap Noted.')+'</div>':'')+'<button type="button" class="btn brass" data-noted="'+esc(n.id)+'">Noted</button>'}
+    else h+=(n.devo&&n.ack&&!n.cl?'<div class="ask">Please tap Noted so the Devotions Coordinator knows you\'ve seen it.</div>':'')+'<button type="button" class="btn brass" data-noted="'+esc(n.id)+'">Noted</button>'}
   else if(n.rs&&n.cl&&!r)h+='<p class="sub">Replies have closed.</p>';
   return h+'</div>'}
 async function sendReply(n,b){const m=me(),sel=rsel[n.id];if(!m||!sel)return;
@@ -762,7 +762,7 @@ window.__bandRerender=function(){setTop();if(!D.members.some(m=>m.id===who)){who
 (function(){
 "use strict";
 var API="https://script.google.com/macros/s/AKfycbyicvqPU2m1jZ4yLrbjZCFO2o-fEr2UdV1A44Wgd8dOGOhgwjMjfH__ndfWq8qbjNDX/exec",KK="band.k",KD="band.data";
-window.__bandAppVer="3.8";
+window.__bandAppVer="3.9";
 var st={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},del:function(k){try{localStorage.removeItem(k)}catch(e){}}};
 var $=function(id){return document.getElementById(id)};
 function sha(s){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ("0"+x.toString(16)).slice(-2)}).join("")})}
