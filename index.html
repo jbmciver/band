@@ -62,6 +62,30 @@ h1.pg{margin:0;font:800 1.6rem/1.15 var(--f-body)}
 .sec{font-weight:700;color:var(--muted);margin-top:4px}
 .month{font:800 1.15rem var(--f-body);margin-top:6px}
 /* notes */
+details.fold{border:2px solid var(--line);border-radius:14px;background:var(--bg)}
+details.fold summary{list-style:none;cursor:pointer;min-height:56px;display:flex;align-items:center;gap:10px;padding:10px 14px;font-weight:800;font-size:1.05rem;-webkit-tap-highlight-color:transparent}
+details.fold summary::-webkit-details-marker{display:none}
+details.fold summary::before{content:"\25B6";color:var(--brass);font-size:.85rem}
+details.fold[open] summary::before{content:"\25BC"}
+details.fold .fb{padding:0 14px 14px}
+details.fold .bmw{white-space:pre-wrap;overflow-wrap:anywhere;font-size:1.05rem}
+.brand b#hiTop{font-size:21px}
+.dvban{appearance:none;width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;background:var(--brass-soft);border:2px solid var(--brass);border-radius:16px;padding:14px;font:800 1.05rem var(--f-body);color:var(--ink);cursor:pointer;min-height:56px}
+.dvban small{display:block;font-weight:400;color:var(--muted)}.dvban .chev{font-size:1.6rem;color:var(--brass)}
+.dvban.none{background:var(--surface);border-color:var(--line);color:var(--muted);cursor:default;font-weight:700}
+article.dc.hl{outline:4px solid var(--brass);outline-offset:2px}
+.dvst{margin-top:4px;font-size:.92rem}.pill{display:inline-block;font-size:.85rem;font-weight:700;padding:2px 10px;border-radius:99px;background:var(--off);color:var(--off-ink)}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}.pill.wait{background:var(--wait-soft);color:var(--wait)}.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.dvrow small.hist{display:block;color:var(--muted);font-size:.85rem;margin-top:2px}
+.msg .ask{background:var(--surface);border-radius:12px;padding:10px 12px;font-weight:700}
+.msg .mine{border-left:4px solid var(--navy);background:var(--surface);border-radius:8px;padding:8px 12px}
+.msg .mine small{display:block;color:var(--muted)}
+.rform{display:grid;gap:10px}.ropts{display:grid;gap:8px}
+.ropt{appearance:none;min-height:56px;border-radius:14px;border:2px solid var(--line-strong);background:var(--surface);color:var(--ink);font:700 1.05rem var(--f-body);text-align:left;padding:10px 16px;cursor:pointer}
+.ropt[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:var(--on-navy)}
+.ropt[aria-pressed="true"]::before{content:"\2713  "}
+.rtext{width:100%;min-height:96px;font:inherit;border:2px solid var(--line-strong);border-radius:12px;padding:10px;background:var(--surface);color:var(--ink)}
+.msg .sub{margin:0;color:var(--muted)}
 .msg{background:var(--brass-soft);border:2px solid color-mix(in srgb,var(--brass) 45%,transparent);border-radius:16px;padding:14px;display:grid;gap:10px}
 .msg.read{background:var(--surface);border-color:var(--line)}
 .msg .from{font-weight:700;color:var(--brass);font-size:.92rem}
@@ -206,12 +230,11 @@ label.f{display:grid;gap:6px;font-weight:700}
 .pc .toast{bottom:24px}
 }
 </style>
-<header class="hdr"><div class="hdr-in"><div class="brand"><b>Wollongong Salvos</b><span id="tbupd"></span></div><div class="hbtns"><button class="ib" id="sizeBtn" type="button" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div></div></header>
+<header class="hdr"><div class="hdr-in"><div class="brand"><b id="hiTop">Wollongong Salvos</b><span id="tbupd"></span></div><div class="hbtns"><button class="ib" id="sizeBtn" type="button" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div></div></header>
 <div id="updbar" class="updbar" role="status" hidden><div class="updin"><div><b>A new version is ready</b><span>Tap below to get the latest. It takes a moment.</span></div><button type="button" class="btn brass wide" id="updGo">Update now</button></div></div>
 
 <main>
 <div class="wrap" id="v-week">
-  <h1 class="pg" id="hiName">Hi</h1>
   <div id="noteTop"></div>
   <div class="sec">This week</div>
   <div id="week" style="display:grid;gap:14px"></div>
@@ -351,7 +374,7 @@ function pairHtml(m,i){const w=eff(m,i).want;
   return '<div class="pair"><button type="button" class="btn yes" data-set="in" data-i="'+i+'" aria-pressed="'+(w==="in")+'">I\'ll be there</button><button type="button" class="btn no" data-set="away" data-i="'+i+'" aria-pressed="'+(w==="away")+'">I\'m away</button></div>'}
 const shortName=n=>{const w=String(n).trim().split(/\s+/);return w.length>1?w[0]+" "+w[w.length-1][0]:w[0]};
 function awayHtml(m,i){const a=[];if(eff(m,i).want==="away")a.push("You");
-  D.members.forEach(x=>{if(x.id!==m.id&&["x","p","s"].includes(x.cells[i]))a.push(shortName(x.name))});
+  D.members.forEach(x=>{if(x.id!==m.id&&!x.test&&["x","p","s"].includes(x.cells[i]))a.push(shortName(x.name))});
   return '<div class="who"><b>Away:</b> '+(a.length?esc(a.join(", ")):"Nobody")+'</div>'}
 const kindLabel=s=>kind(s)==="sun"?"Sunday meeting":"Practice";
 function evHtml(s){const ev=evOn(s);return ev.length?'<span class="ev">★ '+esc(ev.map(e=>e.title+(e.time?", "+e.time:"")).join(" · "))+'</span>':''}
@@ -364,31 +387,48 @@ function musicHtml(list){if(!list.length)return '<p class="muted">Not set yet</p
     return '<li><div class="mrow"><div><b>'+esc(r.t)+'</b>'+(tag?' <span class="tag">'+esc(tag)+'</span>':'')+(r.i?'<span class="mi">'+esc(r.i)+'</span>':'')+'</div>'+btn+'</div></li>'}).join("")+'</ol>'}
 function offOf(s){return (D.off||{})[s]||null}
 function cardHtml(m,i,full){const s=D.sessions[i],k=kind(s),M=D.music||{},off=offOf(s);
-  let h='<article class="dc'+(off?' off':'')+'"><div class="dh"><span class="dd">'+fmt(s,true)+'</span>'+(off?'':'<span class="dk">'+kindLabel(s)+'</span>')+evHtml(s)+'</div>'
+  let h='<article class="dc'+(off?' off':'')+'" data-s="'+s+'"><div class="dh"><span class="dd">'+fmt(s,true)+'</span>'+(off?'':'<span class="dk">'+kindLabel(s)+'</span>')+evHtml(s)+'</div>'
    +(off?'<div class="offst">'+esc(off.l)+(off.n?'<small>'+esc(off.n)+'</small>':'')+'</div>':'')+statusHtml(m,i)+(off?'':pairHtml(m,i));
   if(full&&!off){if(k==="wed"){const w=(M.weds||[]).find(x=>x.d===s),reh=(w&&w.reh)||[],dv=reh.find(r=>r.devo);
       if(dv)h+='<div class="who"><b>Devotions:</b> '+esc(dv.i||"Not set yet")+'</div>';
       h+='<div class="sec">Music</div>'+musicHtml(reh.filter(r=>!r.devo))}
-    else{const w=(M.suns||[]).find(x=>x.d===s);h+='<div class="sec">Band music</div>'+musicHtml((w&&w.list)||[])}}
+    else{const w=(M.suns||[]).find(x=>x.d===s);h+='<div class="sec">Band music</div>'+musicHtml((w&&w.list)||[])+wordsHtml(s,w)}}
+  // My dates: the Sunday's band music and Band Message Words, each closed until tapped (only when the Bandmaster made them visible)
+  if(!full&&!off&&k==="sun"){const w=(M.suns||[]).find(x=>x.d===s);if(w&&(w.list||[]).length)h+=fold("mus-"+s,"Band music",musicHtml(w.list));h+=wordsHtml(s,w)}
   return h+awayHtml(m,i)+visHtml(i)+'</article>'}
+// a section that opens and closes; stays as the member left it until the app is closed (never saved)
+const openFolds=new Set();
+function fold(k,title,body){return '<details class="fold" data-fold="'+esc(k)+'"'+(openFolds.has(k)?' open':'')+'><summary>'+esc(title)+'</summary><div class="fb">'+body+'</div></details>'}
+document.addEventListener("toggle",e=>{const d=e.target;if(d&&d.dataset&&d.dataset.fold){if(d.open)openFolds.add(d.dataset.fold);else openFolds.delete(d.dataset.fold)}},true);
+function wordsHtml(s,w){return w&&w.w?fold("bmw-"+s,"Band Message Words",'<div class="bmw">'+esc(w.w)+'</div>'):""}
 function visHtml(i){const v=(D.visitors||{})[D.sessions[i]]||[];
   return v.length?'<div class="vis"><div class="sec">Visiting players</div><ul>'+v.map(x=>'<li><b>'+esc(x.n)+'</b>'+(x.p?' <span class="muted">'+esc(x.p)+'</span>':'')+'</li>').join("")+'</ul></div>':''}
 
 // ----- views -----
 function renderWeek(){const m=me();recs=[];
-  $("hiName").textContent=m?"Hi "+(m.short||m.name.split(" ")[0]):"Hi";
+  setTop();
   if(!m){$("week").innerHTML="";return}
   const up=upcoming(),wi=up.find(i=>kind(D.sessions[i])==="wed"),si=up.find(i=>kind(D.sessions[i])==="sun");
   $("week").innerHTML=[wi,si].filter(i=>i!=null).sort((a,b)=>a-b).map(i=>cardHtml(m,i,true)).join("")||'<p class="muted">No band dates coming up.</p>'}
 function renderDates(){const m=me(),area=$("myarea");
   for(const b of document.querySelectorAll("[data-view]"))b.setAttribute("aria-pressed",String(b.dataset.view===dview));
   if(!m){area.innerHTML="";return}
-  const up=upcoming();
-  if(dview==="cal"){area.innerHTML=calHtml(m,up);return}
+  const up=upcoming(),banner=devoBanner(m);
+  if(dview==="cal"){area.innerHTML=banner+calHtml(m,up);return}
   const shown=showAll?up:up.slice(0,10);let h="",mon=null;
   for(const i of shown){const s=D.sessions[i],mm=P(s).getMonth();if(mm!==mon){mon=mm;h+='<div class="month">'+MONL[mm]+'</div>'}h+=cardHtml(m,i,false)}
   if(!showAll&&up.length>shown.length)h+='<button type="button" class="btn wide" id="moreBtn">Show more dates, to '+fmt(D.sessions[up[up.length-1]],true)+'</button>';
-  area.innerHTML=h||'<p class="muted">No band dates coming up.</p>'}
+  area.innerHTML=banner+(h||'<p class="muted">No band dates coming up.</p>')}
+// Devotions banner at the top of My dates: this member's upcoming Wednesdays on the devotions roster (with the coordinator's
+// latest changes). Tapping it goes to the next one in the list and outlines it for a few seconds. Read-only.
+function myDevo(m){return upcoming().map(i=>D.sessions[i]).filter(s=>kind(s)==="wed"&&((D.devo||{})[s]||{}).m===m.id)}
+function devoBanner(m){const W=myDevo(m);
+  if(!W.length)return '<div class="dvban none">Devotions: you\'re not rostered</div>';
+  return '<button type="button" class="dvban" data-devogo="'+W[0]+'"><span>Devotions: you\'re on '+esc(fmt(W[0],true))+(W.length>1?'<small>Also '+esc(W.slice(1).map(s=>fmt(s,true)).join(", "))+'</small>':'')+'</span><span aria-hidden="true" class="chev">›</span></button>'}
+function devoGo(s){const i=D.sessions.indexOf(s);if(i<0)return;dview="list";store.set("band2.dview",dview);
+  if(upcoming().indexOf(i)>=10)showAll=true;renderDates();
+  const c=document.querySelector('#myarea article[data-s="'+s+'"]');if(!c)return;c.scrollIntoView({behavior:"smooth",block:"center"});
+  c.classList.add("hl");setTimeout(()=>c.classList.remove("hl"),3500)}
 function calHtml(m,up){if(!up.length)return '<p class="muted">No band dates coming up.</p>';
   const months=[...new Set(up.map(i=>D.sessions[i].slice(0,7)))];
   if(!calM||!months.includes(calM))calM=months[0];
@@ -404,14 +444,47 @@ function calHtml(m,up){if(!up.length)return '<p class="muted">No band dates comi
   return '<div class="cal"><div class="ch"><button type="button" class="ib" data-cm="-1" aria-label="Previous month"'+(pi<=0?' disabled':'')+'>‹</button><b>'+MONL[mo-1]+' '+y+'</b><button type="button" class="ib" data-cm="1" aria-label="Next month"'+(pi>=months.length-1?' disabled':'')+'>›</button></div>'
    +'<div class="grid7">'+g+'</div><div class="leg"><span><i style="background:var(--ok-soft);border:1px solid var(--ok)"></i>In</span><span><i style="background:var(--bad)"></i>Away</span><span><i style="border:2px dashed var(--wait)"></i>Sent</span>'+(inM.some(i=>offOf(D.sessions[i]))?'<span><i style="background:var(--off);border:2px dashed var(--off-line)"></i>No band</span>':'')+'</div></div>'
    +(calSel!=null?cardHtml(m,calSel,false):'')}
-function noteHtml(n,btn){return '<div class="msg'+(btn?'':' read')+'"><span class="from">'+(n.to?'Just for you':btn?'From the Bandmaster':'Read')+(n.date?' · '+esc(fmt(n.date,true)):'')+'</span><div class="nt">'+linky(n.text)+'</div>'+(btn?'<button type="button" class="btn brass" data-noted="'+esc(n.id)+'">Noted</button>':'')+'</div>'}
+// A note can ask for Noted (ack), offer answers to tap (rs.k "one" or "many") or take a written reply (rs.k "text").
+// Sending a reply also counts as Noted. A member only ever sees their own reply (D.myReplies, or the one just sent).
+const rsel={};   // replies being chosen or typed, by note id, kept while the app is open so a refresh doesn't lose them
+function myReply(n){const r=(D.myReplies||{})[n.id],l=store.get("band.replies",{})[n.id];return l&&(!r||String(l.at)>String(r.at))?l:(r||null)}
+function replyText(n,r){return n.rs.k==="text"?String(r.t||""):(r.c||[]).map(i=>(n.rs.o||[])[i]).filter(Boolean).join(", ")}
+function replyForm(n){const sel=rsel[n.id]||(rsel[n.id]={c:[],t:""}),k=n.rs.k;
+  const ready=k==="text"?!!sel.t.trim():sel.c.length>0;
+  return '<div class="rform" data-rnote="'+esc(n.id)+'"><div class="sec">'+(k==="one"?'Choose one':k==="many"?'Choose any that apply':'Your reply to the Bandmaster')+'</div>'
+   +(k==="text"?'<textarea class="rtext" rows="3" maxlength="300" placeholder="Type your reply">'+esc(sel.t)+'</textarea>'
+     :'<div class="ropts">'+(n.rs.o||[]).map((o,i)=>'<button type="button" class="ropt" data-ropt="'+i+'" aria-pressed="'+sel.c.includes(i)+'">'+esc(o)+'</button>').join("")+'</div>')
+   +'<p class="sub">Only the Bandmaster sees your reply.</p><button type="button" class="btn navy" data-rsend="'+esc(n.id)+'"'+(ready?'':' disabled')+'>Send reply</button></div>'}
+function noteHtml(n,btn){const r=n.rs?myReply(n):null;
+  let h='<div class="msg'+(btn?'':' read')+'"><span class="from">'+(n.devo?'Just for you · Devotions':n.to?'Just for you':btn?'From the Bandmaster':'Read')+(n.date?' · '+esc(fmt(n.date,true)):'')+'</span><div class="nt">'+linky(n.text)+'</div>';
+  if(r)h+='<div class="mine"><b>Your reply</b> · '+esc(whenText(new Date(r.at)))+'<div>'+esc(replyText(n,r))+'</div><small>Sent for Bandmaster</small></div>';
+  if(btn){if(n.rs&&!n.cl&&!r)h+=replyForm(n);
+    else h+=(n.ack&&!n.cl?'<div class="ask">'+(n.devo?'Please tap Noted so the Devotions Coordinator knows you\'ve seen it.':'The Bandmaster has asked you to tap Noted.')+'</div>':'')+'<button type="button" class="btn brass" data-noted="'+esc(n.id)+'">Noted</button>'}
+  else if(n.rs&&n.cl&&!r)h+='<p class="sub">Replies have closed.</p>';
+  return h+'</div>'}
+async function sendReply(n,b){const m=me(),sel=rsel[n.id];if(!m||!sel)return;
+  if(!window.__bandApi){showMsg("Not sent","Open the band app to reply.");return}
+  b.disabled=true;b.textContent="Sending…";
+  try{const r=await window.__bandApi({api:"reply",m:m.id,nid:n.id,c:sel.c.join(","),t:sel.t});
+    if(r&&r.ok){const L=store.get("band.replies",{});L[n.id]=r.reply;store.set("band.replies",L);delete rsel[n.id];markNoted(n);showMsg("Reply sent","The Bandmaster will see it.");return}
+    showMsg("Not sent",r&&r.error==="closed"?"Replies to this note have closed.":"That didn't send. Try again.")}
+  catch(e){showMsg("Not sent","Check your internet connection, then try again.")}
+  renderNotes()}
+document.addEventListener("click",e=>{const o=e.target.closest("[data-ropt]");if(o){const box=o.closest("[data-rnote]"),id=box.dataset.rnote,n=(D.notes||[]).find(x=>x.id===id);if(!n)return;
+    const sel=rsel[id]||(rsel[id]={c:[],t:""}),i=+o.dataset.ropt;
+    if(n.rs.k==="one")sel.c=[i];else sel.c=sel.c.includes(i)?sel.c.filter(x=>x!==i):sel.c.concat([i]);
+    document.querySelectorAll('[data-rnote="'+id+'"]').forEach(f=>{f.querySelectorAll("[data-ropt]").forEach(x=>x.setAttribute("aria-pressed",String(sel.c.includes(+x.dataset.ropt))));f.querySelector("[data-rsend]").disabled=!sel.c.length});return}
+  const sb=e.target.closest("[data-rsend]");if(sb){const n=(D.notes||[]).find(x=>x.id===sb.dataset.rsend);if(n)sendReply(n,sb)}});
+document.addEventListener("input",e=>{const t=e.target.closest(".rtext");if(!t)return;const id=t.closest("[data-rnote]").dataset.rnote,sel=rsel[id]||(rsel[id]={c:[],t:""});sel.t=t.value;
+  document.querySelectorAll('[data-rnote="'+id+'"]').forEach(f=>{const x=f.querySelector(".rtext");if(x!==t)x.value=t.value;f.querySelector("[data-rsend]").disabled=!t.value.trim()})});
 function linky(t){return String(t||"").split(" ").map(w=>/^https?:/.test(w)?'<a href="'+esc(w)+'" target="_blank" rel="noopener">'+esc(w)+'</a>':esc(w)).join(" ")}
 // Noted taps are kept on this phone AND sent to the Bandmaster's record, so a note read on one device is read on all of them.
 function serverNoted(){const m=me();if(!m)return {};const o={},nb=(D.notedBy||{})[m.id]||{};for(const k in nb)o[k]=nb[k]&&nb[k].v;return Object.assign(o,window.__notedFor||{})}
 // a note with "to" (the devotions reminder) is only for that member
 // the day's automatic reminders (No Band, devotions) always show; the Bandmaster's notes only from notesFrom on
-function myNotes(){const m=me();return (D.notes||[]).filter(n=>(!n.to||(m&&m.id===n.to))&&(!notesFrom||n.to||/^(off|devo)-/.test(n.id)||String(n.v||"")>=notesFrom))}
-function notesSplit(){const N=myNotes(),seen=store.get("band.noted",{}),srv=serverNoted();const isNew=n=>seen[n.id]!==n.v&&srv[n.id]!==n.v;return {fresh:N.filter(isNew),old:N.filter(n=>!isNew(n))}}
+function myNotes(){const m=me();return (D.notes||[]).filter(n=>(!n.to||(m&&m.id===n.to))&&(!n.ids||(m&&n.ids.includes(m.id)))&&(!notesFrom||n.to||/^(off|devo)-/.test(n.id)||String(n.v||"")>=notesFrom))}
+function notesSplit(){const N=myNotes(),seen=store.get("band.noted",{}),srv=serverNoted();const m=me(),done=n=>!!m&&((D.ackDone||{})[n.id]||[]).includes(m.id);   // marked done by the Bandmaster
+  const isNew=n=>seen[n.id]!==n.v&&srv[n.id]!==n.v&&!done(n);return {fresh:N.filter(isNew),old:N.filter(n=>!isNew(n))}}
 function flushNoted(){const g=gsr(),q=store.get("band.notedQ",[]);if(!g||typeof g.notedFromPage!=="function"||!q.length)return;
   q.forEach(x=>{g.withSuccessHandler(r=>{if(r&&r.ok===false)return;const k=store.get("band.notedQ",[]).filter(y=>!(y.m===x.m&&y.id===x.id&&y.v===x.v));store.set("band.notedQ",k)}).withFailureHandler(()=>{}).notedFromPage(x.m,x.id,x.v)})}
 function markNoted(n){const seen=store.get("band.noted",{});seen[n.id]=n.v;store.set("band.noted",seen);const m=me();
@@ -515,13 +588,21 @@ function dvPinSheet(err){openSheet('<h2>Enter your coordinator PIN</h2><p class=
   +(err?'<p class="err" role="alert">'+esc(err)+'</p>':'')+'<button type="button" class="btn navy" id="dvPinGo">Continue</button><button type="button" class="btn" data-close>Not now</button>',"dvpin");
   setTimeout(()=>{const i=$("dvPinIn");i&&i.focus()},50)}
 function dvErr(r){return r&&r.error==="locked"?"Too many tries. Wait "+(r.wait||15)+" minutes, then try again.":r&&r.error==="nopin"?"The Bandmaster hasn't set your PIN yet.":r&&r.error==="role"?"This phone isn't set up as the Devotions Coordinator.":"That PIN isn't right. Check with the Bandmaster."}
+// how a Wednesday stands (D.devoAck from the Apps Script): Noted, Pending, Overdue or Not asked yet, plus who it was before
+function dvStatus(w,c){const e=(D.devoAck||{})[w],when=t=>t?whenText(new Date(t)):"";if(!c||!c.p)return "";
+  if(!c.m)return '<span class="pill">Not in the band app</span>';
+  if(!e||e.m!==c.m||!e.sentAt)return '<span class="pill">Not asked to tap Noted</span> <button type="button" class="lnk" data-dvask="'+w+'">Ask now</button>';
+  if(e.ackAt)return '<span class="pill ok">Noted</span> '+esc(when(e.ackAt));
+  if(e.remAt)return '<span class="pill bad">Overdue</span> reminder sent '+esc(when(e.remAt));
+  return '<span class="pill wait">Pending</span> asked '+esc(when(e.sentAt))}
+function dvHist(w){const h=((D.devoAck||{})[w]||{}).hist||[];return h.length?'<small class="hist">'+h.slice().reverse().map(x=>'Was '+esc(x.p||"no one")+(x.ackAt?' (noted '+esc(whenText(new Date(x.ackAt)))+')':'')+', changed '+esc(whenText(new Date(x.endedAt)))).join("<br>")+'</small>':''}
 function dvRoster(){const W=dvWeds();
   openSheet('<h2>Devotions roster</h2><div class="dvlist">'+W.map(i=>{const w=D.sessions[i],c=dvNow(w);
-    return '<div class="dvrow"><div><b>'+esc(fmt(w,true))+'</b><small'+(c&&c.p?'':' class="no"')+'>'+esc(c&&c.p?c.p:"No one yet")+'</small></div><button type="button" class="btn" data-dvw="'+w+'">Change</button></div>'}).join("")
+    return '<div class="dvrow"><div><b>'+esc(fmt(w,true))+'</b><small'+(c&&c.p?'':' class="no"')+'>'+esc(c&&c.p?c.p:"No one yet")+'</small><div class="dvst">'+dvStatus(w,c)+'</div>'+dvHist(w)+'</div><button type="button" class="btn" data-dvw="'+w+'">Change</button></div>'}).join("")
    +'</div><p class="sub">Shows the next '+W.length+' Wednesdays.</p><button type="button" class="btn navy" data-close>Done</button>',"dvroster")}
 let dvSel=null;
 function dvChoose(w){const i=D.sessions.indexOf(w),cur=dvNow(w);dvSel=cur&&cur.p?{p:cur.p,m:cur.m||""}:null;
-  const ms=D.members.slice().sort((a,b)=>a.name.localeCompare(b.name));
+  const ms=D.members.filter(x=>!x.test).sort((a,b)=>a.name.localeCompare(b.name));
   openSheet('<h2>Who is doing devotions on '+esc(fmt(w,true))+'?</h2>'
    +'<label class="srch"><span aria-hidden="true">'+ICON.search+'</span><input type="search" id="dvQ" placeholder="Search for a name" autocomplete="off" aria-label="Search for a name"><button type="button" id="dvQx" aria-label="Clear">✕</button></label>'
    +'<div class="dvopts">'+ms.map(m=>{const away=i>=0&&["x","p","s"].includes(m.cells[i]);return '<button type="button" class="dvopt" data-dvm="'+esc(m.id)+'" data-n="'+esc(m.name.toLowerCase())+'" aria-pressed="'+(!!dvSel&&dvSel.m===m.id)+'">'+esc(m.name)+(away?'<small>away that day</small>':'')+'</button>'}).join("")
@@ -533,13 +614,15 @@ function dvGoLabel(w){const b=$("dvGo");if(!b)return;const o=$("dvOther");
   const nm=dvSel?(dvSel.none?"":dvSel.m?dvSel.p:(o?o.value.trim():"")):null;
   b.disabled=nm===null||(dvSel&&!dvSel.m&&!dvSel.none&&!nm);
   b.textContent=nm===null?"Choose a name":dvSel.none?"Yes, no one yet on "+fmt(w,true):nm?"Yes, "+nm+" on "+fmt(w,true):"Type their name"}
-async function dvSave(w){const o=$("dvOther"),person=dvSel.none?"":dvSel.m?dvSel.p:o.value.trim(),pm=dvSel.none?"":dvSel.m||"";
-  const b=$("dvGo");b.disabled=true;b.textContent="Saving…";
-  try{const r=await window.__bandApi({api:"devo",m:me().id,pin:dvPin(),w:w,person:person,pm:pm});
-    if(r&&r.ok){D.devo=D.devo||{};if(r.person)D.devo[w]={p:r.person,m:pm};else delete D.devo[w];dvRoster();showMsg("Saved",(r.person?r.person+" is on for ":"No one yet for ")+fmt(w,true)+". The Bandmaster has been told.");return}
+async function dvSave(w,send){const o=$("dvOther"),person=dvSel.none?"":dvSel.m?dvSel.p:(o?o.value.trim():dvSel.p||""),pm=dvSel.none?"":dvSel.m||"";
+  const b=$("dvGo")||document.querySelector("[data-dvsend]");if(b){b.disabled=true;b.textContent="Saving…"}
+  try{const r=await window.__bandApi({api:"devo",m:me().id,pin:dvPin(),w:w,person:person,pm:pm,send:send?"1":"0"});
+    if(r&&r.ok){D.devo=D.devo||{};if(r.person)D.devo[w]={p:r.person,m:pm};else delete D.devo[w];
+      if(send&&pm){D.devoAck=D.devoAck||{};const e=D.devoAck[w];D.devoAck[w]=Object.assign({},e&&e.m===pm?e:{hist:(e&&e.hist)||[]},{m:pm,p:r.person,sentAt:new Date().toISOString()})}
+      dvRoster();showMsg("Saved",(r.person?r.person+" is on for ":"No one yet for ")+fmt(w,true)+"."+(send&&pm?" They've been asked to tap Noted.":"")+" The Bandmaster has been told.");return}
     if(r&&(r.error==="pin"||r.error==="nopin"||r.error==="role")){store.set("band.rolePin","");dvPinSheet(dvErr(r));return}
-    showMsg("Not saved",dvErr(r));dvGoLabel(w)}
-  catch(e){showMsg("Not saved","Check your internet connection, then try again.");dvGoLabel(w)}}
+    showMsg("Not saved",dvErr(r));if($("dvGo"))dvGoLabel(w);else dvRoster()}
+  catch(e){showMsg("Not saved","Check your internet connection, then try again.");if($("dvGo"))dvGoLabel(w);else dvRoster()}}
 $("sheet").addEventListener("click",async e=>{const t=e.target;
   if(t.closest("#dvOpen")){if(dvPin())dvRoster();else dvPinSheet("");return}
   if(t.closest("#dvPinGo")){const v=($("dvPinIn").value||"").trim();if(!/^\d{4}$/.test(v)){dvPinSheet("Type the 4 numbers.");return}
@@ -554,7 +637,12 @@ $("sheet").addEventListener("click",async e=>{const t=e.target;
     const o=$("dvOther");o.hidden=v!=="__other";
     if(v==="__none")dvSel={none:true};else if(v==="__other"){dvSel={p:o.value.trim(),m:""};o.focus()}else{const m=D.members.find(x=>x.id===v);dvSel={p:m.name,m:m.id}}
     dvGoLabel(w);return}
-  if(t.closest("#dvGo")){dvSave(t.closest("#dvGo").dataset.w);return}});
+  if(t.closest("#dvGo")){const w=t.closest("#dvGo").dataset.w;if(dvSel&&dvSel.m)dvAskSheet(w);else dvSave(w,false);return}
+  const sd=t.closest("[data-dvsend]");if(sd){dvSave(sd.dataset.w,sd.dataset.dvsend==="1");return}
+  const ak=t.closest("[data-dvask]");if(ak){const w=ak.dataset.dvask,c=dvNow(w);if(c&&c.m){dvSel={p:c.p,m:c.m};dvAskSheet(w)}return}});
+// one confirm before the Noted request goes: yes sends it now, not now just saves the change
+function dvAskSheet(w){openSheet('<h2>Ask '+esc(dvSel.p)+' to tap Noted?</h2><p class="sub">'+esc(dvSel.p)+' gets an alert and a note in the band app about devotions on '+esc(fmt(w,true))+'. You\'ll see when they tap Noted.</p>'
+  +'<button type="button" class="btn brass" data-dvsend="1" data-w="'+w+'">Yes, send it</button><button type="button" class="btn" data-dvsend="0" data-w="'+w+'">Not now</button>',"dvask")}
 function dvFilter(){const q=($("dvQ")||{}).value||"";const n=q.trim().toLowerCase();
   document.querySelectorAll(".dvopt[data-n]").forEach(b=>{b.hidden=!!n&&!b.dataset.n.includes(n)})}
 $("sheet").addEventListener("input",e=>{if(e.target.id==="dvQ")dvFilter();if(e.target.id==="dvOther"){const g=$("dvGo");if(g)dvGoLabel(g.dataset.w)}});
@@ -594,6 +682,7 @@ document.addEventListener("click",e=>{
   const cm=t.closest("button[data-cm]");if(cm){const up=upcoming(),months=[...new Set(up.map(i=>D.sessions[i].slice(0,7)))];const k=months.indexOf(calM)+(+cm.dataset.cm);if(months[k]){calM=months[k];calSel=null}renderDates();return}
   const dy=t.closest("button[data-day]");if(dy){calSel=+dy.dataset.day;renderDates();return}
   if(t.closest("#moreBtn")){showAll=true;renderDates();return}
+  const dg=t.closest("[data-devogo]");if(dg){devoGo(dg.dataset.devogo);return}
   if(t.closest("#rangeBtn")){rangeSheet();return}
   if(t.closest("#sizeBtn")){sizeSheet();return}
   if(t.closest("[data-undo]")){undo();return}
@@ -619,7 +708,8 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("sheet").hidden)
 // ----- who are you (once per phone) -----
 if(store.get("band.whoSince","")!==(D.pwSince||"")){who="";store.set("band.who","")}
 const sel=$("who");
-sel.innerHTML+=D.members.filter(m=>m.player).slice().sort((a,b)=>a.formName.localeCompare(b.formName)).map(m=>'<option value="'+esc(m.id)+'">'+esc(m.formName||m.name)+'</option>').join("");
+// a test user (for the Bandmaster to check the app) comes last, marked as a test
+sel.innerHTML+=D.members.filter(m=>m.player).slice().sort((a,b)=>(a.test?1:0)-(b.test?1:0)||a.formName.localeCompare(b.formName)).map(m=>'<option value="'+esc(m.id)+'">'+esc(m.formName||m.name)+(m.test?' (test user)':'')+'</option>').join("");
 sel.addEventListener("change",()=>{$("pickGo").disabled=!sel.value});
 $("pickGo").addEventListener("click",()=>{if(!sel.value)return;who=sel.value;store.set("band.who",who);store.set("band.whoSince",D.pwSince||"");$("pick").hidden=true;
   const seen=store.get("band.noted",{}),m=me();if(m)myNotes().forEach(n=>{if(seen[n.id]===n.v)markNoted(n)});   // notes read before picking a name
@@ -630,7 +720,9 @@ if(!who)$("pick").hidden=false;
 function whenText(t){if(isNaN(t))return "";const h=t.getHours(),mi=String(t.getMinutes()).padStart(2,"0");const tm=((h%12)||12)+":"+mi+(h<12?"am":"pm");
   return t.toDateString()===new Date().toDateString()?tm:DOW[t.getDay()]+" "+t.getDate()+" "+MON[t.getMonth()]+" "+tm}
 function isStale(){const st=window.__bandStatus;return !!(st&&st.checked&&!st.checking&&Date.now()-st.checked>3600000)}
-function setTop(){const el=$("tbupd");el.textContent=updText();el.classList.toggle("stale",isStale())}
+// the header: "Hi Alex" big once a name is chosen, with the band name and the update time on the small line
+function setTop(){const el=$("tbupd"),m=me();$("hiTop").textContent=m?"Hi "+(m.short||m.name.split(" ")[0]):"Wollongong Salvos";
+  el.textContent=(m?"Wollongong Salvos · ":"")+updText();el.classList.toggle("stale",isStale())}
 function updText(){const v=window.__bandAppVer?"v"+window.__bandAppVer+" · ":"";const st=window.__bandStatus;
   if(st&&st.checking)return v+"Checking…";
   if(st&&st.checked&&isStale())return v+"Not updated since "+whenText(new Date(st.checked));
@@ -654,7 +746,7 @@ window.__bandRerender=function(){setTop();if(!D.members.some(m=>m.id===who)){who
 (function(){
 "use strict";
 var API="https://script.google.com/macros/s/AKfycbyicvqPU2m1jZ4yLrbjZCFO2o-fEr2UdV1A44Wgd8dOGOhgwjMjfH__ndfWq8qbjNDX/exec",KK="band.k",KD="band.data";
-window.__bandAppVer="3.4";
+window.__bandAppVer="3.6";
 var st={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},del:function(k){try{localStorage.removeItem(k)}catch(e){}}};
 var $=function(id){return document.getElementById(id)};
 function sha(s){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ("0"+x.toString(16)).slice(-2)}).join("")})}
