@@ -114,7 +114,9 @@ article.dc.hl{outline:4px solid var(--brass);outline-offset:2px}
 .dc.off{background:var(--off);border:2px dashed var(--off-line)}.dc.off .dd{color:var(--off-ink)}
 .offst{font:800 1.1rem/1.25 var(--f-body);color:var(--off-ink);padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--off-ink) 12%,transparent)}
 .offst small{display:block;font:400 .95rem var(--f-body)}
-.grid7 button.d.off{background:var(--off);color:var(--off-ink);border:2px dashed var(--off-line);text-decoration:line-through}
+.grid7 button.d.d.off{background:var(--off);color:var(--off-ink);border:2px dashed var(--off-line);align-content:center;line-height:1.05}
+.grid7 button.d.d.off small{display:block;font:800 .58rem var(--f-body);text-transform:uppercase;letter-spacing:.02em}
+.dvrow.off{background:var(--off);color:var(--off-ink);border-left:5px solid var(--off-line);border-radius:8px;padding-left:10px;padding-right:6px}.dvrow.off small{color:var(--off-ink);font-weight:700}
 .dvlist{display:grid}.dvrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
 .dvrow:last-child{border-bottom:0}.dvrow b{display:block;font-size:1.05rem}.dvrow small{color:var(--muted);font-size:.95rem}.dvrow small.no{color:var(--bad);font-weight:700}.dvrow .btn{min-height:48px}
 .srch{display:flex;align-items:center;gap:8px;min-height:56px;border:2px solid var(--navy);border-radius:14px;padding:0 6px 0 12px;background:var(--surface)}
@@ -330,12 +332,17 @@ let who=store.get("band.who","");
 // Announcements start from the first time the app is opened on this phone (a new install, or put back on the Home Screen
 // after being deleted): notes the Bandmaster posted before then aren't shown. Phones that already had the app keep them all.
 if(store.get("band.notesFrom",null)===null)store.set("band.notesFrom",who||Object.keys(store.get("band.noted",{})).length?"":new Date(Date.now()-600000).toISOString());   // 10 minutes of grace for a phone clock that runs fast
-const notesFrom=store.get("band.notesFrom","");
+const notesFromPhone=store.get("band.notesFrom","");
+// After the app is put on a phone again, the member's Noted taps kept centrally (D.notedBy, by the name they pick)
+// bring back their whole Announcements history: old notes they noted show as read, so nothing is cut off from install time.
+function hasNotedRecord(){const m=me();return !!m&&(Object.keys((D.notedBy||{})[m.id]||{}).length>0||Object.keys(window.__notedFor||{}).length>0)}
+function notesFromFn(){return hasNotedRecord()?"":notesFromPhone}
 if(!D.members.some(m=>m.id===who))who="";
 let intents=store.get("band2.intents",{});   // {memberId:{date:{want:"in"|"away",at}}} sent, not yet shown on the roster
 let queue=store.get("band2.queue",null);     // {mid,items:[{date,want,reason}],at} waiting out the Undo time
 let fs=store.get("band2.fs",17);
-let tab=store.get("band2.tab","week"),dview=store.get("band2.dview","list"),showAll=false,calM=null,calSel=null;
+// The app always opens on This week, with My dates as a list (also after more than 5 minutes away from the app)
+let tab="week",dview="list",shown=10,calM=null,calSel=null;
 document.documentElement.style.setProperty("--fs",fs+"px");
 // carry over v1 "sent" markers so nothing looks lost after the update
 (function migrate(){if(store.get("band2.migrated",false))return;
@@ -392,9 +399,9 @@ function cardHtml(m,i,full){const s=D.sessions[i],k=kind(s),M=D.music||{},off=of
   if(full&&!off){if(k==="wed"){const w=(M.weds||[]).find(x=>x.d===s),reh=(w&&w.reh)||[],dv=reh.find(r=>r.devo);
       if(dv)h+='<div class="who"><b>Devotions:</b> '+esc(dv.i||"Not set yet")+'</div>';
       h+='<div class="sec">Music</div>'+musicHtml(reh.filter(r=>!r.devo))}
-    else{const w=(M.suns||[]).find(x=>x.d===s);h+='<div class="sec">Band music</div>'+musicHtml((w&&w.list)||[])+wordsHtml(s,w)}}
-  // My dates: the Sunday's band music and Band Message Words, each closed until tapped (only when the Bandmaster made them visible)
-  if(!full&&!off&&k==="sun"){const w=(M.suns||[]).find(x=>x.d===s);if(w&&(w.list||[]).length)h+=fold("mus-"+s,"Band music",musicHtml(w.list));h+=wordsHtml(s,w)}
+    else{const w=(M.suns||[]).find(x=>x.d===s);h+='<div class="sec">Music</div>'+musicHtml((w&&w.list)||[])+wordsHtml(s,w)}}
+  // My dates: the Sunday's music and Band Message Words, each closed until tapped (only when the Bandmaster made them visible)
+  if(!full&&!off&&k==="sun"){const w=(M.suns||[]).find(x=>x.d===s);if(w&&(w.list||[]).length)h+=fold("mus-"+s,"Music",musicHtml(w.list));h+=wordsHtml(s,w)}
   return h+awayHtml(m,i)+visHtml(i)+'</article>'}
 // a section that opens and closes; stays as the member left it until the app is closed (never saved)
 const openFolds=new Set();
@@ -415,9 +422,10 @@ function renderDates(){const m=me(),area=$("myarea");
   if(!m){area.innerHTML="";return}
   const up=upcoming(),banner=devoBanner(m);
   if(dview==="cal"){area.innerHTML=banner+calHtml(m,up);return}
-  const shown=showAll?up:up.slice(0,10);let h="",mon=null;
-  for(const i of shown){const s=D.sessions[i],mm=P(s).getMonth();if(mm!==mon){mon=mm;h+='<div class="month">'+MONL[mm]+'</div>'}h+=cardHtml(m,i,false)}
-  if(!showAll&&up.length>shown.length)h+='<button type="button" class="btn wide" id="moreBtn">Show more dates, to '+fmt(D.sessions[up[up.length-1]],true)+'</button>';
+  // 10 dates, then 10 more with each tap of Show more dates, up to the 12 months the app has
+  const list=up.slice(0,shown);let h="",mon=null;
+  for(const i of list){const s=D.sessions[i],mm=P(s).getMonth();if(mm!==mon){mon=mm;h+='<div class="month">'+MONL[mm]+'</div>'}h+=cardHtml(m,i,false)}
+  if(up.length>list.length)h+='<button type="button" class="btn wide" id="moreBtn">Show more dates, to '+fmt(D.sessions[up[Math.min(up.length,shown+10)-1]],true)+'</button>';
   area.innerHTML=banner+(h||'<p class="muted">No band dates coming up.</p>')}
 // Devotions banner at the top of My dates: this member's upcoming Wednesdays on the devotions roster (with the coordinator's
 // latest changes). Tapping it goes to the next one in the list and outlines it for a few seconds. Read-only.
@@ -425,8 +433,8 @@ function myDevo(m){return upcoming().map(i=>D.sessions[i]).filter(s=>kind(s)==="
 function devoBanner(m){const W=myDevo(m);
   if(!W.length)return '<div class="dvban none">Devotions: you\'re not rostered</div>';
   return '<button type="button" class="dvban" data-devogo="'+W[0]+'"><span>Devotions: you\'re on '+esc(fmt(W[0],true))+(W.length>1?'<small>Also '+esc(W.slice(1).map(s=>fmt(s,true)).join(", "))+'</small>':'')+'</span><span aria-hidden="true" class="chev">›</span></button>'}
-function devoGo(s){const i=D.sessions.indexOf(s);if(i<0)return;dview="list";store.set("band2.dview",dview);
-  if(upcoming().indexOf(i)>=10)showAll=true;renderDates();
+function devoGo(s){const i=D.sessions.indexOf(s);if(i<0)return;dview="list";
+  const k=upcoming().indexOf(i);if(k>=shown)shown=Math.ceil((k+1)/10)*10;renderDates();
   const c=document.querySelector('#myarea article[data-s="'+s+'"]');if(!c)return;c.scrollIntoView({behavior:"smooth",block:"center"});
   c.classList.add("hl");setTimeout(()=>c.classList.remove("hl"),3500)}
 function calHtml(m,up){if(!up.length)return '<p class="muted">No band dates coming up.</p>';
@@ -439,7 +447,7 @@ function calHtml(m,up){if(!up.length)return '<p class="muted">No band dates comi
   for(let k=0;k<lead;k++)g+='<span class="d"></span>';
   for(let d=1;d<=days;d++){const s=calM+"-"+String(d).padStart(2,"0"),i=byIso[s];
     if(i==null)g+='<span class="d">'+d+'</span>';
-    else{const e=eff(m,i),off=offOf(s);g+='<button type="button" class="d '+e.st+(off?' off':'')+(i===calSel?' sel':'')+'" data-day="'+i+'" aria-label="'+esc(fmtLong(s))+', '+esc(off?off.l:ST[e.st][0])+'">'+d+'</button>'}}
+    else{const e=eff(m,i),off=offOf(s);g+='<button type="button" class="d '+e.st+(off?' off':'')+(i===calSel?' sel':'')+'" data-day="'+i+'" aria-label="'+esc(fmtLong(s))+', '+esc(off?off.l:ST[e.st][0])+'">'+d+(off?'<small aria-hidden="true">No band</small>':'')+'</button>'}}
   const pi=months.indexOf(calM);
   return '<div class="cal"><div class="ch"><button type="button" class="ib" data-cm="-1" aria-label="Previous month"'+(pi<=0?' disabled':'')+'>‹</button><b>'+MONL[mo-1]+' '+y+'</b><button type="button" class="ib" data-cm="1" aria-label="Next month"'+(pi>=months.length-1?' disabled':'')+'>›</button></div>'
    +'<div class="grid7">'+g+'</div><div class="leg"><span><i style="background:var(--ok-soft);border:1px solid var(--ok)"></i>In</span><span><i style="background:var(--bad)"></i>Away</span><span><i style="border:2px dashed var(--wait)"></i>Sent</span>'+(inM.some(i=>offOf(D.sessions[i]))?'<span><i style="background:var(--off);border:2px dashed var(--off-line)"></i>No band</span>':'')+'</div></div>'
@@ -482,7 +490,7 @@ function linky(t){return String(t||"").split(" ").map(w=>/^https?:/.test(w)?'<a 
 function serverNoted(){const m=me();if(!m)return {};const o={},nb=(D.notedBy||{})[m.id]||{};for(const k in nb)o[k]=nb[k]&&nb[k].v;return Object.assign(o,window.__notedFor||{})}
 // a note with "to" (the devotions reminder) is only for that member
 // the day's automatic reminders (No Band, devotions) always show; the Bandmaster's notes only from notesFrom on
-function myNotes(){const m=me();return (D.notes||[]).filter(n=>(!n.to||(m&&m.id===n.to))&&(!n.ids||(m&&n.ids.includes(m.id)))&&(!notesFrom||n.to||/^(off|devo)-/.test(n.id)||String(n.v||"")>=notesFrom))}
+function myNotes(){const m=me(),notesFrom=notesFromFn();return (D.notes||[]).filter(n=>(!n.to||(m&&m.id===n.to))&&(!n.ids||(m&&n.ids.includes(m.id)))&&(!notesFrom||n.to||/^(off|devo)-/.test(n.id)||String(n.v||"")>=notesFrom))}
 function notesSplit(){const N=myNotes(),seen=store.get("band.noted",{}),srv=serverNoted();const m=me(),done=n=>!!m&&((D.ackDone||{})[n.id]||[]).includes(m.id);   // marked done by the Bandmaster
   const isNew=n=>seen[n.id]!==n.v&&srv[n.id]!==n.v&&!done(n);return {fresh:N.filter(isNew),old:N.filter(n=>!isNew(n))}}
 function flushNoted(){const g=gsr(),q=store.get("band.notedQ",[]);if(!g||typeof g.notedFromPage!=="function"||!q.length)return;
@@ -499,7 +507,10 @@ function renderNotes(){const {fresh,old}=notesSplit();
 function renderTabs(){for(const v of ["week","dates","msg"])$("v-"+v).hidden=v!==tab;
   for(const b of document.querySelectorAll("#tbar button"))if(b.dataset.tab===tab)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")}
 function renderAll(){renderTabs();renderNotes();renderWeek();renderDates();renderToast()}
-function setTab(t){tab=t;store.set("band2.tab",t);renderTabs();window.scrollTo(0,0)}
+function setTab(t){tab=t;renderTabs();window.scrollTo(0,0)}
+let hiddenAt=0;
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"){hiddenAt=Date.now();return}
+  if(hiddenAt&&Date.now()-hiddenAt>300000){dview="list";shown=10;calM=null;calSel=null;renderDates();setTab("week")}hiddenAt=0});
 
 // ----- sending (one confirm, 5 second Undo, then off to the Bandmaster) -----
 const UNDO_MS=5000;
@@ -561,7 +572,7 @@ function rangeList(){const m=me(),f=$("rgF").value,t=$("rgT").value;const box=$(
   if(!ds.length){box.innerHTML='<p class="muted">No band dates between those days.</p>';updRangeBtn(0);return}
   box.innerHTML='<p class="sub">Untick any you can still make.</p><ul class="ticks">'+ds.map(i=>{const s=D.sessions[i],e=eff(m,i),done=e.want==="away";
     if(rangeSel[s]===undefined)rangeSel[s]=!done;
-    return '<li><label><input type="checkbox" data-rg="'+s+'"'+(rangeSel[s]?' checked':'')+(done?' disabled':'')+'><span class="tk"><b>'+esc(fmt(s,true))+'</b><small>'+kindLabel(s)+(done?(e.st==="usual"?' · not usually on '+(kind(s)==="sun"?"Sundays":"Wednesdays"):' · already away'):'')+'</small></span></label></li>'}).join("")+'</ul>';
+    return '<li><label><input type="checkbox" data-rg="'+s+'"'+(rangeSel[s]?' checked':'')+(done?' disabled':'')+'><span class="tk"><b>'+esc(fmt(s,true))+'</b><small>'+(offOf(s)?esc(offOf(s).l):kindLabel(s))+(done?(e.st==="usual"?' · not usually on '+(kind(s)==="sun"?"Sundays":"Wednesdays"):' · already away'):'')+'</small></span></label></li>'}).join("")+'</ul>';
   updRangeBtn(ds.filter(i=>rangeSel[D.sessions[i]]&&eff(m,i).want!=="away").length)}
 function updRangeBtn(n){const b=document.querySelector("[data-rgo]");if(!b)return;b.disabled=!n;b.textContent=n?"Submit to Bandmaster for noting ("+n+" date"+(n>1?"s":"")+")":"No dates picked"}
 function recSheet(r){const url=String(r.l||"").trim();let body="";
@@ -581,7 +592,10 @@ const myRoles=()=>{const m=me();return (m&&m.roles)||[]};
 function rolesHtml(){if(!window.__bandApi||!myRoles().includes("devotionsCoordinator"))return "";
   return '<div class="sec">Devotions Coordinator</div><button type="button" class="btn navy wide" id="dvOpen">Devotions roster</button>'}
 const dvPin=()=>store.get("band.rolePin","");
-function dvWeds(){return upcoming().filter(i=>kind(D.sessions[i])==="wed").slice(0,12)}
+let dvN=12;   // Wednesdays shown in the devotions roster; Show more dates adds 12 more
+function dvWeds(){return upcoming().filter(i=>kind(D.sessions[i])==="wed").slice(0,dvN)}
+function dvMoreHtml(){const all=upcoming().filter(i=>kind(D.sessions[i])==="wed");if(all.length<=dvN)return "";
+  return '<button type="button" class="btn wide" id="dvMore">Show more dates, to '+esc(fmt(D.sessions[all[Math.min(all.length,dvN+12)-1]],true))+'</button>'}
 function dvNow(w){return (D.devo||{})[w]||null}
 function dvPinSheet(err){openSheet('<h2>Enter your coordinator PIN</h2><p class="sub">The 4 numbers the Bandmaster gave you. This phone remembers it, so you only do this once.</p>'
   +'<input type="text" id="dvPinIn" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" class="pinin" aria-label="PIN">'
@@ -598,8 +612,9 @@ function dvStatus(w,c){const e=(D.devoAck||{})[w],when=t=>t?whenText(new Date(t)
 function dvHist(w){const h=((D.devoAck||{})[w]||{}).hist||[];return h.length?'<small class="hist">'+h.slice().reverse().map(x=>'Was '+esc(x.p||"no one")+(x.ackAt?' (noted '+esc(whenText(new Date(x.ackAt)))+')':'')+', changed '+esc(whenText(new Date(x.endedAt)))).join("<br>")+'</small>':''}
 function dvRoster(){const W=dvWeds();
   openSheet('<h2>Devotions roster</h2><div class="dvlist">'+W.map(i=>{const w=D.sessions[i],c=dvNow(w);
-    return '<div class="dvrow"><div><b>'+esc(fmt(w,true))+'</b><small'+(c&&c.p?'':' class="no"')+'>'+esc(c&&c.p?c.p:"No one yet")+'</small><div class="dvst">'+dvStatus(w,c)+'</div>'+dvHist(w)+'</div><button type="button" class="btn" data-dvw="'+w+'">Change</button></div>'}).join("")
-   +'</div><p class="sub">Shows the next '+W.length+' Wednesdays.</p><button type="button" class="btn navy" data-close>Done</button>',"dvroster")}
+    const off=offOf(w);if(off&&!(c&&c.p))return '<div class="dvrow off"><div><b>'+esc(fmt(w,true))+'</b><small>'+esc(off.l)+' · no devotions needed</small></div><button type="button" class="btn" data-dvw="'+w+'">Change</button></div>';
+    return '<div class="dvrow'+(off?' off':'')+'"><div><b>'+esc(fmt(w,true))+'</b>'+(off?'<small>'+esc(off.l)+'</small>':'')+'<small'+(c&&c.p?'':' class="no"')+'>'+esc(c&&c.p?c.p:"No one yet")+'</small><div class="dvst">'+dvStatus(w,c)+'</div>'+dvHist(w)+'</div><button type="button" class="btn" data-dvw="'+w+'">Change</button></div>'}).join("")
+   +'</div><p class="sub">Shows the next '+W.length+' Wednesdays.</p>'+dvMoreHtml()+'<button type="button" class="btn navy" data-close>Done</button>',"dvroster")}
 let dvSel=null;
 function dvChoose(w){const i=D.sessions.indexOf(w),cur=dvNow(w);dvSel=cur&&cur.p?{p:cur.p,m:cur.m||""}:null;
   const ms=D.members.filter(x=>!x.test).sort((a,b)=>a.name.localeCompare(b.name));
@@ -624,7 +639,8 @@ async function dvSave(w,send){const o=$("dvOther"),person=dvSel.none?"":dvSel.m?
     showMsg("Not saved",dvErr(r));if($("dvGo"))dvGoLabel(w);else dvRoster()}
   catch(e){showMsg("Not saved","Check your internet connection, then try again.");if($("dvGo"))dvGoLabel(w);else dvRoster()}}
 $("sheet").addEventListener("click",async e=>{const t=e.target;
-  if(t.closest("#dvOpen")){if(dvPin())dvRoster();else dvPinSheet("");return}
+  if(t.closest("#dvOpen")){dvN=12;if(dvPin())dvRoster();else dvPinSheet("");return}
+  if(t.closest("#dvMore")){const y=$("sheetInner").scrollTop;dvN+=12;dvRoster();$("sheetInner").scrollTop=y;return}
   if(t.closest("#dvPinGo")){const v=($("dvPinIn").value||"").trim();if(!/^\d{4}$/.test(v)){dvPinSheet("Type the 4 numbers.");return}
     const b=$("dvPinGo");b.disabled=true;b.textContent="Checking…";
     try{const r=await window.__bandApi({api:"pin",m:me().id,pin:v});if(r&&r.ok){store.set("band.rolePin",v);dvRoster()}else dvPinSheet(dvErr(r))}
@@ -678,10 +694,10 @@ document.addEventListener("click",e=>{
   const sb=t.closest("button[data-set]");if(sb){const m=me(),i=+sb.dataset.i;if(!m)return;if(eff(m,i).want===sb.dataset.set)return;confirmSheet(i,sb.dataset.set);return}
   const rb=t.closest("button[data-rec]");if(rb){const r=recs[+rb.dataset.rec];if(r)recSheet(r);return}
   const nb=t.closest("button[data-noted]");if(nb){const n=(D.notes||[]).find(x=>x.id===nb.dataset.noted);if(!n)return;markNoted(n);return}
-  const vb=t.closest("button[data-view]");if(vb){dview=vb.dataset.view;store.set("band2.dview",dview);renderDates();return}
+  const vb=t.closest("button[data-view]");if(vb){dview=vb.dataset.view;renderDates();return}
   const cm=t.closest("button[data-cm]");if(cm){const up=upcoming(),months=[...new Set(up.map(i=>D.sessions[i].slice(0,7)))];const k=months.indexOf(calM)+(+cm.dataset.cm);if(months[k]){calM=months[k];calSel=null}renderDates();return}
   const dy=t.closest("button[data-day]");if(dy){calSel=+dy.dataset.day;renderDates();return}
-  if(t.closest("#moreBtn")){showAll=true;renderDates();return}
+  if(t.closest("#moreBtn")){shown+=10;renderDates();return}
   const dg=t.closest("[data-devogo]");if(dg){devoGo(dg.dataset.devogo);return}
   if(t.closest("#rangeBtn")){rangeSheet();return}
   if(t.closest("#sizeBtn")){sizeSheet();return}
@@ -746,7 +762,7 @@ window.__bandRerender=function(){setTop();if(!D.members.some(m=>m.id===who)){who
 (function(){
 "use strict";
 var API="https://script.google.com/macros/s/AKfycbyicvqPU2m1jZ4yLrbjZCFO2o-fEr2UdV1A44Wgd8dOGOhgwjMjfH__ndfWq8qbjNDX/exec",KK="band.k",KD="band.data";
-window.__bandAppVer="3.6";
+window.__bandAppVer="3.8";
 var st={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},del:function(k){try{localStorage.removeItem(k)}catch(e){}}};
 var $=function(id){return document.getElementById(id)};
 function sha(s){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ("0"+x.toString(16)).slice(-2)}).join("")})}
